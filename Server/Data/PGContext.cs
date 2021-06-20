@@ -18,7 +18,7 @@ namespace BlazorBugOne.Server
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string myconnnection = (@"Server=localhost;Port=5432;Database=BlazorBugOne;User Id=mradmin;Password=passthemradmin");
+            string myconnnection = (@"Server=localhost;Port=5432;Database=BlazorBugOne;User Id=mradmin;Password=password");
             base.OnConfiguring(optionsBuilder);
 
             //  optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DBTESTCORE2B");
