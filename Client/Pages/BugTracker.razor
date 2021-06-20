@@ -1,0 +1,147 @@
+﻿@using BlazorBugOne.Shared
+@inject HttpClient Http
+
+
+@page "/BugTracker"
+
+<h1>The Bug Tracker</h1>
+
+<button type="button" @onclick="CreateBug" class="btn btn-primary">Create Bug</button>
+
+
+<button type="button" @onclick="DeleteBug" class="btn btn-primary">Delete Bug</button>
+
+<button type="button" @onclick="PostBug" class="btn btn-primary">Post Bug</button>
+
+<button type="button" @onclick="ShowBugs" class="btn btn-primary">Show Bugs</button>
+
+
+
+@if (bug == null)
+{
+    <h1>No Bug created</h1>
+}
+else
+{
+    <h1>Bug results</h1>
+    @bug.description
+    <br />
+}
+
+
+@if (resultstring != null)
+{
+    <h1>@resultstring</h1>
+    <br />
+
+}
+else
+{
+    <h1> No Result yet</h1>
+    <br />
+}
+
+
+@if (bugs != null)
+{
+    foreach (var item in bugs)
+    {
+        <p>@item.description</p>
+    }
+}else
+            {
+                <h1>bugs are null for now</h1>
+            }
+
+
+
+
+
+<h1>@resultstring</h1>
+
+@code {
+
+    Bug bug = new();
+    List<Bug> bugs = new();
+    HttpResponseMessage result;
+    string resultstring;
+    // string myconnnection = (@"Server=localhost;Port=5432;Database=PortFolioOne;User Id=mradmin;Password=passthemradmin");
+
+    //[Parameter]
+    //public string myparam { get; set; } = "test param";
+
+    private async Task CreateBug()
+    {
+        bug.description = "This is the first bug";
+
+        //   var result = await Http.GetFromJsonAsync<string>("BugCreate");
+        result = await Http.GetAsync("BugManage/Create/?myparam=wiggles&myparam2=woggles");
+        resultstring = await result.Content.ReadAsStringAsync();
+
+    }
+
+
+    private async Task DeleteBug()
+    {
+        bug.description = "This is delete bug";
+
+
+
+        //var result = await Http.GetFromJsonAsync<string>("BugCreate");
+        result = await Http.GetAsync("BugManage/Delete");
+        resultstring = await result.Content.ReadAsStringAsync();
+    }
+
+    private string newItemName;
+
+    private async Task PostBug()
+    {
+        bug.description = "This is Post bug again";
+
+        //  HttpContent content;
+
+        var addItem = new Bug { description = "apostbug", summary = "Very crazy bug" };
+        //   var result =    await Http.PostAsJsonAsync("BugManage/Post", addItem);
+        var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", addItem);
+        //    resultstring = await result.Content.ReadAsStringAsync();
+        
+        
+        resultstring = result.StatusCode.ToString();
+        Console.WriteLine("Status code again is " + resultstring);
+        this.StateHasChanged();
+
+
+        //var result = await Http.GetFromJsonAsync<string>("BugCreate");
+        //   result = await Http.PostAsync("BugManage/Post");
+        //  var result = await Http.PostAsync($"BugManage/Post", content).ConfigureAwait(false);
+        //  resultstring = await result.Content.ReadAsStringAsync();
+    }
+
+    private async Task ShowBugs()
+    {
+        bug.description = "Attempting to Show Bugs";
+        bugs = new();
+        bugs = await Http.GetFromJsonAsync<List<Bug>>("BugManage/GetBugs");
+            
+        Console.WriteLine("The bugs are " + resultstring);
+
+        this.StateHasChanged();
+
+
+        //var result = await Http.GetFromJsonAsync<string>("BugCreate");
+        //   result = await Http.PostAsync("BugManage/Post");
+        //  var result = await Http.PostAsync($"BugManage/Post", content).ConfigureAwait(false);
+        //  resultstring = await result.Content.ReadAsStringAsync();
+    }
+
+
+
+
+
+    private Bug[] forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+}
