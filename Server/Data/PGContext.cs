@@ -18,6 +18,8 @@ namespace BlazorBugOne.Server
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
+            
             string myconnnection = (@"Server=localhost;Port=5432;Database=BlazorBugOne;User Id=mradmin;Password=passthemradmin");
             base.OnConfiguring(optionsBuilder);
 

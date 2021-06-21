@@ -73,7 +73,7 @@ namespace BlazorBugOne.Server.Controllers
             Console.WriteLine("Post has been called again");
             //  return RedirectToAction("Counter");
             //  ActionResult actionResult;
-            IActionResult response = Ok(new { result = "TEST" });
+            IActionResult response = Ok(new { result = "Success" });
 
             Console.WriteLine(bug.description);
             Console.WriteLine(bug.summary);
@@ -203,7 +203,7 @@ namespace BlazorBugOne.Server.Controllers
             // id = 56;
             //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
             //   showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).ToList();
-            var onebug = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).Where(b => b.id == id).FirstOrDefault();
+            var onebug = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).Include(bug => bug.assignedto).Where(b => b.id == id).FirstOrDefault();
             string oneJson = JsonSerializer.Serialize(onebug);
             Console.WriteLine(oneJson);
             return oneJson;
@@ -224,7 +224,7 @@ namespace BlazorBugOne.Server.Controllers
 
             //https://docs.microsoft.com/en-us/ef/core/querying/related-data/#lazy-loading
             //note the using entity core above to get the include option
-            showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).ToList();
+            showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).Include(bug => bug.assignedto).ToList();
 
               
 

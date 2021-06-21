@@ -3,10 +3,12 @@
 @using BlazorBugOne.Shared;
 
 @inject HttpClient httpClient
+@inject NavigationManager NavigationManager
+
 
 @page "/MudSort"
 
-<MudTable Items="@bugs" Hover="true" SortLabel="Sort By" Dense=true  CommitEditTooltip="Save">
+<MudTable Items="@bugs" Hover="true" SortLabel="Sort By" Dense=true CommitEditTooltip="Save">
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x=>x.id)">BugId#</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x=>x.summary)">Bug Summary</MudTableSortLabel></MudTh>
@@ -17,9 +19,9 @@
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.priority)">Priority</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.lifecycle)">Life Cycle</MudTableSortLabel></MudTh>
         @*<MudTh><MudTableSortLabel Enabled="@enabled" SortBy="new Func<Element, object>(x=>x.Sign)">Sign</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Element, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<Element, object>(x=>x.Position)">Position</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<Element, object>(x=>x.Molar)">Mass</MudTableSortLabel></MudTh>*@
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Element, object>(x=>x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Element, object>(x=>x.Position)">Position</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Element, object>(x=>x.Molar)">Mass</MudTableSortLabel></MudTh>*@
     </HeaderContent>
     <RowTemplate>
         <MudTd @onclick="@(() => DoThing(@context))" DataLabel="bugid">@context.id</MudTd>
@@ -33,9 +35,9 @@
         <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
 
         @*<MudTd>
-            <br />
-            <MudTextField Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@context.summary"  @onclick="@(() => DoThing(@context))" Label="Bug Summary" />
-        </MudTd>*@
+                <br />
+                <MudTextField Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@context.summary"  @onclick="@(() => DoThing(@context))" Label="Bug Summary" />
+            </MudTd>*@
 
     </RowTemplate>
     <PagerContent>
@@ -45,7 +47,7 @@
 
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
 
-<h1>@alert</h1>
+@*<h1>@alert</h1>*@
 
 
 @code {
@@ -70,7 +72,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        
+
 
         bugs = await httpClient.GetFromJsonAsync<List<Bug>>("BugManage/GetBugs");
 
@@ -88,6 +90,10 @@
     {
         // await TableChanged.InvokeAsync(bugs);
         alert = "WeeeWooo WeeeWooo " + bug.id;
+
+
+        NavigationManager.NavigateTo("/MudTest/" + bug.id);
+
     }
 
 

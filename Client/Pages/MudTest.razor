@@ -9,7 +9,7 @@
 
     <MudAlert Severity="Severity.Error">Meltdown is imminent</MudAlert>*@
 
-<h1>Ultra Bug Tracker 2000 X Mega Extreme Ulitmate Edition  v1.0</h1>
+<h1>Ultra Bug Tracker 2000 X Mega Extreme Ultimate Edition  v1.0</h1>
 
 <MudCard>
     <MudCardContent>
@@ -108,14 +108,14 @@
 
 </MudCard>
 
-@*@if (resultstring != null)
+@if (resultstring != null)
     {
         <h1>@resultstring</h1>
 
     }else
                 {
                     <h1>Result String is null</h1>
-                }*@
+                }
 
 
 
@@ -134,7 +134,7 @@
     string firstname = "NA";
     string assignedTo = "NA";
     string[] errors = { };
-    string resultstring = "NA";
+    string resultstring = "";
     string resolutionText = "NA";
     string priorityText = "NA";
     string lifeCycleText = "NA";
@@ -176,6 +176,35 @@
             Bug newbug = await Http.GetFromJsonAsync<Bug>("BugManage/GetBug/" + bugid);
 
             summaryText = newbug.summary;
+            detailsText = newbug.description;
+
+
+            projectText = newbug.project.name;
+
+
+            firstname = newbug.person.firstname;
+            priorityText = newbug.priority;
+            lifeCycleText = newbug.lifecycle;
+            assignedTo = newbug.assignedto.firstname;
+
+            //string reportText = "NA";
+            //string summaryText = "NA";
+            //string detailsText = "NA";
+            //DateTime? discoverydate = DateTime.Today;
+            //DateTime? resolutiondate = DateTime.Today;
+            //string progressReport = "NA";
+            //string projectText = "NA";
+            //string firstname = "NA";
+            //string assignedTo = "NA";
+            //string[] errors = { };
+            //string resultstring = "NA";
+            //string resolutionText = "NA";
+            //string priorityText = "NA";
+            //string lifeCycleText = "NA";
+
+
+
+
         }
 
     }
@@ -188,7 +217,7 @@
 
         bug.created = discoverydate.Value;
         bug.summary = summaryText;
-
+        bug.description = detailsText;
         //      bug.progressreport = progressReport;
         //       bug.resolutionsummary = resolutionText;
 
@@ -210,12 +239,40 @@
         bug.lifecycle = lifeCycleText;
 
 
+        //try
+        //{
+
+        if (bugid != null)
+        {
+            if (int.Parse(bugid) > 0)
+            {
+                bug.id = int.Parse(bugid);
+            }
+        }
+
+        //}
+        //catch (Exception ex)
+        //{
+
+        //    throw ex;
+        //}
+
 
         // bug.id = 54;
 
         var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", bug);
         //    resultstring = await result.Content.ReadAsStringAsync();
-        //    resultstring = result.StatusCode.ToString();
+        resultstring =  result.StatusCode.ToString();
+      
+        if (resultstring == "OK")
+        {
+            resultstring = "Success!";
+
+
+        }
+
+
+
 
         //  Console.WriteLine("Bug Person is " + bug.person.firstname);
         //  summaryText = resultstring;
