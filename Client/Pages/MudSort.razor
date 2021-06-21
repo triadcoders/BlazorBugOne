@@ -32,7 +32,7 @@
         <MudTd DataLabel="firstname">@context.person?.firstname</MudTd>
         <MudTd DataLabel="priority">@context.priority</MudTd>
         <MudTd DataLabel="lifecycle">@context.lifecycle</MudTd>
-        <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
+        <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
 
         @*<MudTd>
                 <br />
@@ -46,8 +46,11 @@
 </MudTable>
 
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
+@*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Admin Mode</MudSwitch>*@
+<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info"  Label="@(!enabled ? "User Mode" : "Admin Mode")" />
 
-@*<h1>@alert</h1>*@
+<h1>@alert</h1>
+
 
 
 @code {
@@ -66,8 +69,13 @@
     private EventCallback<ICollection<Bug>> TableChanged { get; set; }
     string alert = "NA";
 
-    private bool enabled = true;
+    private bool enabled = false;
+
+
     private IEnumerable<Bug> bugs = new List<Bug>();
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,6 +93,18 @@
         }
     }
 
+
+    private void FixToggle(string mystring)
+    {
+
+
+        enabled = !enabled;
+
+        alert = enabled.ToString();
+
+
+
+    }
 
     private async Task DoThing(Bug bug)
     {
