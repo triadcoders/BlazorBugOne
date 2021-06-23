@@ -25,7 +25,41 @@ namespace BlazorBugOne.Server
 
             //  optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DBTESTCORE2B");
             optionsBuilder.UseNpgsql(myconnnection);
+
+            
         }
+
+       public static void AddDemoPeople()
+        {
+            PGContext pGContext = new();
+
+            List<Person> people = DemoData.GenerateDemoData();
+
+
+            var peoplegroup = pGContext.People.Where(p => p.firstname == "Bob" && p.lastname == "Smith");
+
+            Console.WriteLine("mynum is " + peoplegroup.Count());
+            if (peoplegroup.Count()  == 0)
+            {
+                /// people.Where(p => );
+                // people.Select(p => Console.WriteLine(p.firstname + " " + p.lastname));
+                foreach (var person in people)
+                {
+                    pGContext.Remove(person);
+                }
+                Console.WriteLine("Demo People should have been added");
+                pGContext.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Demo People not added, probably already there");
+            }
+
+
+
+
+        }
+
 
     }
 }

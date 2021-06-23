@@ -16,6 +16,8 @@ namespace BlazorBugOne.Client
     {
         public static async Task Main(string[] args)
         {
+
+            
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
@@ -23,6 +25,10 @@ namespace BlazorBugOne.Client
             builder.Services.AddMudServices();
 
             await builder.Build().RunAsync();
+
+
+
+
         }
     }
 }

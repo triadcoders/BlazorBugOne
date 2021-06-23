@@ -25,4 +25,6 @@ namespace BlazorBugOne.Server
                     webBuilder.UseStartup<Startup>();
                 });
     }
+
+
 }

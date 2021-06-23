@@ -42,6 +42,9 @@ namespace BlazorBugOne.Server.Controllers
 
 
 
+
+
+
         [HttpPost("MakePostAgain")]
         public IActionResult CreateBlogAgain(Bug bug)
         {
@@ -121,9 +124,6 @@ namespace BlazorBugOne.Server.Controllers
             {
               //  bug = pGContext.Bugs.Where(b => b.id == bugcount).FirstOrDefault();
                 bug = pGContext.Bugs.OrderByDescending(b => b.id).FirstOrDefault();
-
-
-
             }
 
 
@@ -133,7 +133,6 @@ namespace BlazorBugOne.Server.Controllers
                 pGContext.Remove(bug);
                 pGContext.SaveChanges();
                 return "Data Deleted on bug " + description;
-
             }else
             {
                 return "Bug was null on id " + bugcount;
@@ -210,8 +209,6 @@ namespace BlazorBugOne.Server.Controllers
 
         }
 
-
-
         [HttpGet("GetBugs")]
         public string GetBugs()
         {
@@ -283,7 +280,12 @@ namespace BlazorBugOne.Server.Controllers
 
         }
 
-
+        [HttpGet("DemoData")]
+        public void CreateDemoData()
+        {
+            PGContext.AddDemoPeople();
+            Console.WriteLine("Trying to add demo people...");
+        }
 
 
     }
