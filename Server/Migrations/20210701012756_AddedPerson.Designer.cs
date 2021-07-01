@@ -3,15 +3,17 @@ using System;
 using BlazorBugOne.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BlazorBugOne.Server.Migrations
 {
     [DbContext(typeof(PGContext))]
-    partial class PGContextModelSnapshot : ModelSnapshot
+    [Migration("20210701012756_AddedPerson")]
+    partial class AddedPerson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

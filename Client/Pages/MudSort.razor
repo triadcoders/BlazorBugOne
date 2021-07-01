@@ -2,6 +2,12 @@
 
 @using BlazorBugOne.Shared;
 
+@inject HttpClient Http
+@using System.Threading;
+@inject ISnackbar Snackbar
+
+
+
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
@@ -33,6 +39,7 @@
         <MudTd DataLabel="priority">@context.priority</MudTd>
         <MudTd DataLabel="lifecycle">@context.lifecycle</MudTd>
         <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
+        <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DeleteBug(context))">Delete</MudButton></MudTd>
 
         @*<MudTd>
                 <br />
@@ -47,15 +54,13 @@
 
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Admin Mode</MudSwitch>*@
-<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info"  Label="@(!enabled ? "User Mode" : "Admin Mode")" />
+<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info" Label="@(!enabled ? "User Mode" : "Admin Mode")" />
 
 <h1>@alert</h1>
 
 
 
-@code {
-
-    [Parameter]
+@code { [Parameter]
     public int bugid { get; set; }
 
     Bug bug;
@@ -117,5 +122,17 @@
     }
 
 
-}
+    private async Task DeleteBug(Bug bug)
+    {
+        // await TableChanged.InvokeAsync(bugs);
+        //  alert = "WeeeWooo WeeeWooo " + bug.id;
+       
+        var result = await Http.PostAsJsonAsync("BugManage/DeleteBug", bug);
+        //   var result = await Http.GetAsync("BugManage/DeleteBug", bug.id);
+        //    var result = await Http.PostAsync("BugManage/DeleteBug", bug.id);
+
+        // NavigationManager.NavigateTo("/MudTest/" + bug.id);
+
+    }
+    }
 

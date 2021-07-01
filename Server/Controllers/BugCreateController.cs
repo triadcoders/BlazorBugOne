@@ -41,6 +41,42 @@ namespace BlazorBugOne.Server.Controllers
         }
 
 
+        [HttpPost("AddPerson")]
+        public IActionResult AddUser(Person person)
+        {
+            Console.WriteLine("Post has been called to create a person");
+            //  return RedirectToAction("Counter");
+            //  ActionResult actionResult;
+            IActionResult response = Ok(new { result = "TEST" });
+
+            //     Console.WriteLine(bug.description);
+            //Console.WriteLine(bug.summary);
+
+            pGContext.Add(person);
+            pGContext.SaveChanges();
+
+            return response;
+
+        }
+
+
+
+        [HttpPost("DeleteBug")]
+        public IActionResult DeleteBug(Bug bug)
+        {
+            Console.WriteLine("Post has been called to delete a bug " + bug.id);
+            //  return RedirectToAction("Counter");
+            //  ActionResult actionResult;
+            IActionResult response = Ok(new { result = "TEST" });
+
+            //     Console.WriteLine(bug.description);
+            //Console.WriteLine(bug.summary);
+            pGContext.Remove(bug);
+            pGContext.SaveChanges();
+
+            return response;
+
+        }
 
 
 
