@@ -44,7 +44,10 @@ namespace BlazorBugOne.Server.Controllers
         [HttpPost("AddPerson")]
         public IActionResult AddUser(Person person)
         {
+
+
             Console.WriteLine("Post has been called to create a person");
+            Console.WriteLine("The Person id is " + person.id);
             //  return RedirectToAction("Counter");
             //  ActionResult actionResult;
             IActionResult response = Ok(new { result = "TEST" });
@@ -52,7 +55,8 @@ namespace BlazorBugOne.Server.Controllers
             //     Console.WriteLine(bug.description);
             //Console.WriteLine(bug.summary);
 
-            pGContext.Add(person);
+            //pGContext.Add(person);
+            pGContext.Update(person);
             pGContext.SaveChanges();
 
             return response;
@@ -244,6 +248,62 @@ namespace BlazorBugOne.Server.Controllers
             return oneJson;
 
         }
+
+
+
+        [HttpGet("GetPerson/{id}")]
+        public string GetPerson(int id)
+        {
+            // id = 56;
+            //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
+            //   showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).ToList();
+            var oneperson = pGContext.People.Where(p => p.id == id).First();
+
+            string oneJson = JsonSerializer.Serialize(oneperson);
+            Console.WriteLine(oneJson);
+            return oneJson;
+
+        }
+
+
+        [HttpGet("GetPeople")]
+        public string GetPeople()
+        {
+            List<Person> people = new List<Person>();
+            //https://docs.microsoft.com/en-us/ef/core/querying/related-data/#lazy-loading
+            //note the using entity core above to get the include option
+            people = pGContext.People.ToList();    
+            string jsonString = JsonSerializer.Serialize(people);
+            Console.WriteLine(jsonString);
+            return jsonString;
+        }
+
+
+
+
+
+
+        [HttpPost("DeletePerson")]
+        public IActionResult DeletePerson(Person person)
+        {
+            Console.WriteLine("Post has been called to delete a person " + person.id);
+            //  return RedirectToAction("Counter");
+            //  ActionResult actionResult;
+            IActionResult response = Ok(new { result = "DeletedPerson" });
+
+            //     Console.WriteLine(bug.description);
+            //Console.WriteLine(bug.summary);
+            pGContext.Remove(person);
+            pGContext.SaveChanges();
+
+            return response;
+
+        }
+
+
+
+
+
 
         [HttpGet("GetBugs")]
         public string GetBugs()
