@@ -25,33 +25,33 @@ namespace BlazorBugOne.Shared
 
     }
 
-    public static class DemoData
-        {
+    //public static class DemoData
+    //    {
 
-       public static List<Person> GenerateDemoData()
-        {
-            List<Person> demopeople = new();
+    //   public static List<Person> GenerateDemoData()
+    //    {
+    //        List<Person> demopeople = new();
 
-            for (int i = 0; i < 5; i++)
-            {
-                demopeople.Add( CreatePerson("Bob", "Smith"));
-                demopeople.Add(CreatePerson("Kevin", "Bacon"));
-                demopeople.Add(CreatePerson("George", "Lucas"));
-                demopeople.Add(CreatePerson("Luke", "Skywalker"));
-                demopeople.Add(CreatePerson("Fred", "Sanford"));
-                demopeople.Add(CreatePerson("Sally", "Fields"));
-            }
-            return demopeople;
-        }
+    //        for (int i = 0; i < 5; i++)
+    //        {
+    //            demopeople.Add( CreatePerson("Bob", "Smith"));
+    //            demopeople.Add(CreatePerson("Kevin", "Bacon"));
+    //            demopeople.Add(CreatePerson("George", "Lucas"));
+    //            demopeople.Add(CreatePerson("Luke", "Skywalker"));
+    //            demopeople.Add(CreatePerson("Fred", "Sanford"));
+    //            demopeople.Add(CreatePerson("Sally", "Fields"));
+    //        }
+    //        return demopeople;
+    //    }
 
 
-        static Person CreatePerson(string first, string last)
-        {
-            Person person = new() { firstname = first, lastname = last };
-            return person;
-        }
+    //    static Person CreatePerson(string first, string last)
+    //    {
+    //        Person person = new() { firstname = first, lastname = last };
+    //        return person;
+    //    }
 
-    }
+    //}
 
 
 

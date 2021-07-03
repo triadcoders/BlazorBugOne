@@ -54,9 +54,10 @@
 
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
 @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Admin Mode</MudSwitch>*@
-<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info" Label="@(!enabled ? "User Mode" : "Admin Mode")" />
+@*<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Default" Label="@(!enabled ? "Admin" : "User")" />*@
+<MudSwitch  @bind-Checked="@enabled" Color="Color.Default" Label="@(!enabled ? "Admin" : "User")" />
 
-<h1>@alert</h1>
+@*<h1>@alert</h1>*@
 
 
 
@@ -86,11 +87,14 @@
         //}
     }
 
+    string adminmode = "";
 
     private void FixToggle(string mystring)
     {
         enabled = !enabled;
         alert = enabled.ToString();
+
+        if (enabled) { adminmode = "Admin"; }  else { adminmode = "User";}
     }
 
     private async Task DoThing(Bug bug)

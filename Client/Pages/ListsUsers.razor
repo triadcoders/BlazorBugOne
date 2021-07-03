@@ -78,17 +78,17 @@
     }
 
 
-    private void EditPerson(Person person)
+    private void EditPerson(Person editPerson)
     {
         // await TableChanged.InvokeAsync(bugs);
         //alert = "WeeeWooo WeeeWooo " + bug.id;
-        NavigationManager.NavigateTo("/EditUser/" + person.id);
+        NavigationManager.NavigateTo("/EditUser/" + editPerson.id);
     }
 
 
-    private async Task Delete(Person person)
+    private async Task Delete(Person deletePerson)
     {
-        var result = await httpClient.PostAsJsonAsync("BugManage/DeletePerson", person);
+        var result = await httpClient.PostAsJsonAsync("BugManage/DeletePerson", deletePerson);
 
         Console.WriteLine(result);
         await UpDatePeople();

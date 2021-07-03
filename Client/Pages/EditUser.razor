@@ -79,7 +79,7 @@
     //    MudTextField<string> pwField1;
     MudForm form;
     Bug bug = new();
-    Person person = new();
+    Person personNew = new();
 
     public string Text { get; set; } = "????";
     public string ButtonText { get; set; } = "Click Me";
@@ -92,14 +92,14 @@
         if (personid != null)
         {
 
-            Person person = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + personid);
+            Person personNew2 = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + personid);
 
-            firstName = person.firstname;
-            lastName = person.lastname;
+            firstName = personNew2.firstname;
+            lastName = personNew2.lastname;
             userid = personid;
-            if (person.usertype != null)
+            if (personNew2.usertype != null)
             {
-                userType = person.usertype;
+                userType = personNew2.usertype;
 
             }else
             {
@@ -111,9 +111,9 @@
 
     private async Task AddPerson()
     {
-        person.firstname = firstName;
-        person.lastname = lastName;
-        person.usertype = userType;
+        personNew.firstname = firstName;
+        personNew.lastname = lastName;
+        personNew.usertype = userType;
 
         //if (userid != null)
         //{
@@ -133,14 +133,14 @@
         //}
         Console.WriteLine("userid is " + userid);
         if (userid != null)
-        {        
+        {
             if (int.Parse(userid) > 0)
             {
-                person.id = int.Parse(userid);
+                personNew.id = int.Parse(userid);
             }
         }
 
-    var result = await Http.PostAsJsonAsync("BugManage/AddPerson", person);
+        var result = await Http.PostAsJsonAsync("BugManage/AddPerson", personNew);
 
-}
+    }
     }

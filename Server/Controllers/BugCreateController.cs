@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using BlazorBugOne.Server;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorBugOne.Server.Controllers
@@ -22,7 +22,7 @@ namespace BlazorBugOne.Server.Controllers
         //}
 
         Bug bug = new();
-        PGContext pGContext = new();
+    ///    PGContext pGContext = new();
         //https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/routing?view=aspnetcore-5.0
         
         [HttpPost("MakePost")]
@@ -46,7 +46,7 @@ namespace BlazorBugOne.Server.Controllers
 
 
         [HttpPost("AddPerson")]
-        public IActionResult AddUser(Person person)
+        public async Task<IActionResult> AddUser(Person person)
         {
 
 
@@ -60,8 +60,12 @@ namespace BlazorBugOne.Server.Controllers
             //Console.WriteLine(bug.summary);
 
             //pGContext.Add(person);
-            pGContext.Update(person);
-            pGContext.SaveChanges();
+            //pGContext.Update(person);
+            // pGContext.SaveChanges();
+
+           await ContextUpdater.UpdatePerson(person);
+
+
 
             return response;
 
@@ -70,7 +74,7 @@ namespace BlazorBugOne.Server.Controllers
 
 
         [HttpPost("DeleteBug")]
-        public IActionResult DeleteBug(Bug bug)
+        public async Task<IActionResult> DeleteBug(Bug bug)
         {
             Console.WriteLine("Post has been called to delete a bug " + bug.id);
             //  return RedirectToAction("Counter");
@@ -79,8 +83,13 @@ namespace BlazorBugOne.Server.Controllers
 
             //     Console.WriteLine(bug.description);
             //Console.WriteLine(bug.summary);
-            pGContext.Remove(bug);
-            pGContext.SaveChanges();
+
+
+            //pGContext.Remove(bug);
+            //pGContext.SaveChanges();
+
+
+            await ContextUpdater.UpdateBug(bug);
 
             return response;
 
@@ -90,7 +99,7 @@ namespace BlazorBugOne.Server.Controllers
 
 
         [HttpPost("MakePostAgain")]
-        public IActionResult CreateBlogAgain(Bug bug)
+        public async Task<IActionResult> CreateBlogAgain(Bug bug)
         {
 
             Console.WriteLine("Bug incomming ...bug id is " + bug.id);        
@@ -102,10 +111,37 @@ namespace BlazorBugOne.Server.Controllers
             Console.WriteLine(bug.description);
             Console.WriteLine(bug.summary);
             Console.WriteLine("project name is " + bug.project?.name);
-            Console.WriteLine("firstname is " + bug.personAssigned?.firstname);
+            Console.WriteLine("Person Assigned is is " + bug.personAssigned?.firstname);
+            Console.WriteLine("Person Discovered is is " + bug.personDiscovered?.firstname);
 
-            pGContext.Update(bug);
-            pGContext.SaveChanges();
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("Bug Priority is " + bug.priority  );
+            Console.WriteLine("Bug Assinged id is " + bug.personAssigned.id);
+            Console.WriteLine("Bug discovered id is " + bug.personDiscovered.id);
+            //To Do add the get thing to get a new updated person thing.
+
+
+            //if (bug.personAssigned.id == bug.personDiscovered.id)
+            //{
+            //    bug.personDiscovered = bug.personAssigned;
+            //}
+
+
+
+            //Person one = bug.personAssigned;
+            //Person two = bug.personDiscovered;
+          //  pGContext.Update(bug);
+          //  pGContext.SaveChanges();
+
+            await ContextUpdater.UpdateBug(bug);
+            
+
+            //pGContext.Update(bug.personDiscovered);
+            //pGContext.SaveChanges();
+
+
+
 
             return response;
 
@@ -124,28 +160,37 @@ namespace BlazorBugOne.Server.Controllers
         public string Delete() 
         {
 
-            int bugcount = pGContext.Bugs.Count();
+            //int bugcount = pGContext.Bugs.Count();
+          //  int bugcount = ContextUpdater.pGContext.Bugs.Count();
+
+            int bugcount = ContextUpdater.GetBugCount(); //remember
+
             string description = "";
 
 
             if (bugcount >= 0)
             {
               //  bug = pGContext.Bugs.Where(b => b.id == bugcount).FirstOrDefault();
-                bug = pGContext.Bugs.OrderByDescending(b => b.id).FirstOrDefault();
+                //bug = ContextUpdater.pGContext.Bugs.OrderByDescending(b => b.id).FirstOrDefault();
+                bug = ContextUpdater.GetBugOrderByDesending();
             }
 
 
             if (bug != null)
             {
                 description = bug.description + " " + bug.id;
-                pGContext.Remove(bug);
-                pGContext.SaveChanges();
+                
+              //  ContextUpdater.pGContext.Remove(bug); //remember
+                ContextUpdater.RemoveBug(bug);
+                //ContextUpdater.pGContext.SaveChanges();
+
+
                 return "Data Deleted on bug " + description;
             }else
             {
                 return "Bug was null on id " + bugcount;
             }
-
+            
             //var weatherForecast = new WeatherForecast
             //{
             //    Date = DateTime.Parse("2019-08-01"),
@@ -174,8 +219,10 @@ namespace BlazorBugOne.Server.Controllers
 
             bug.description = "I am a bug #1";
             //pGContext.Add()
-            pGContext.Add(bug);
-            pGContext.SaveChanges();
+
+            ContextUpdater.UpdateBug(bug);  //remember  updating instead of adding...is ok?
+            //ContextUpdater.pGContext.Add(bug);
+            //ContextUpdater.pGContext.SaveChanges();
 
             var weatherForecast = new WeatherForecast
             {
@@ -210,7 +257,12 @@ namespace BlazorBugOne.Server.Controllers
             // id = 56;
             //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
             //   showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).ToList();
-            var onebug = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).Include(bug => bug.personAssigned).Where(b => b.id == id).FirstOrDefault();
+            
+            //remember
+        //    var onebug = ContextUpdater.pGContext.Bugs.Include(bug => bug.personDiscovered).Include(bug => bug.project).Include(bug => bug.personAssigned).Where(b => b.id == id).FirstOrDefault();
+
+            var onebug = ContextUpdater.GetBug(id);
+            
             string oneJson = JsonSerializer.Serialize(onebug);
             Console.WriteLine(oneJson);
             return oneJson;
@@ -225,7 +277,12 @@ namespace BlazorBugOne.Server.Controllers
             // id = 56;
             //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
             //   showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).ToList();
-            var oneperson = pGContext.People.Where(p => p.id == id).First();
+            
+            
+            //var oneperson = ContextUpdater.pGContext.People.Where(p => p.id == id).First(); remember
+
+            var oneperson = ContextUpdater.GetPerson(id);
+
 
             string oneJson = JsonSerializer.Serialize(oneperson);
             Console.WriteLine(oneJson);
@@ -240,7 +297,13 @@ namespace BlazorBugOne.Server.Controllers
             List<Person> people = new List<Person>();
             //https://docs.microsoft.com/en-us/ef/core/querying/related-data/#lazy-loading
             //note the using entity core above to get the include option
-            people = pGContext.People.ToList();    
+         
+            
+            //  people = ContextUpdater.pGContext.People.ToList(); //remember
+
+            people = ContextUpdater.GetPeople();
+
+
             string jsonString = JsonSerializer.Serialize(people);
             Console.WriteLine(jsonString);
             return jsonString;
@@ -262,9 +325,11 @@ namespace BlazorBugOne.Server.Controllers
             //     Console.WriteLine(bug.description);
             //Console.WriteLine(bug.summary);
 
-            int mycount = pGContext.Bugs.Where(b => b.personDiscovered.id == person.id).Count();
+         //   int mycount = ContextUpdater.pGContext.Bugs.Where(b => b.personDiscovered.id == person.id).Count();
 
-                
+            int mycount = ContextUpdater.GetPersonCountbyId(person.id);
+            
+           
                             
 
 
@@ -284,8 +349,11 @@ namespace BlazorBugOne.Server.Controllers
 
 
                 Console.WriteLine("mycount is " + mycount);
-                pGContext.Remove(person);
-                pGContext.SaveChanges();
+               // ContextUpdater.pGContext.Remove(person);
+
+                ContextUpdater.RemovePerson(person);
+
+             //   ContextUpdater.pGContext.SaveChanges();
             }
 
 
@@ -314,14 +382,18 @@ namespace BlazorBugOne.Server.Controllers
 
             //https://docs.microsoft.com/en-us/ef/core/querying/related-data/#lazy-loading
             //note the using entity core above to get the include option
-            showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).Include(bug => bug.personAssigned).ToList();
+          
+            //remember
+            //  showbugs = ContextUpdater.pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).Include(bug => bug.personAssigned).ToList();
 
+            showbugs = ContextUpdater.GetBugs();
               
 
             //     bugs = pGContext.Bugs.Where(b => b.person.firstname == "BOB".ToLower() ).ToList();
 
 
-            foreach (var item in pGContext.Bugs)
+         //   foreach (var item in ContextUpdater.pGContext.Bugs)
+            foreach (var item in showbugs)
             {
                 Console.WriteLine("Person:");
                 if (item.personDiscovered != null)
@@ -376,8 +448,8 @@ namespace BlazorBugOne.Server.Controllers
         [HttpGet("DemoData")]
         public void CreateDemoData()
         {
-            PGContext.AddDemoPeople();
-            Console.WriteLine("Trying to add demo people...");
+          //  PGContext.AddDemoPeople();
+         //   Console.WriteLine("Trying to add demo people...");
         }
 
 
