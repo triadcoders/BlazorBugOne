@@ -28,6 +28,8 @@ namespace BlazorBugOne.Server.Controllers
         [HttpPost("MakePost")]
         public IActionResult CreateBlog(Bug bug)
         {
+            Console.WriteLine("********************");
+            Console.WriteLine("********************");
             Console.WriteLine("Post has been called");
             //  return RedirectToAction("Counter");
           //  ActionResult actionResult;
@@ -35,7 +37,9 @@ namespace BlazorBugOne.Server.Controllers
 
             Console.WriteLine(bug.description);
             Console.WriteLine(bug.summary);
-
+            Console.WriteLine("The bug person is " + bug.personAssigned.firstname);
+            Console.WriteLine("The bug assingee is " + bug.personAssigned.firstname);
+      
             return response;
 
         }
@@ -89,30 +93,7 @@ namespace BlazorBugOne.Server.Controllers
         public IActionResult CreateBlogAgain(Bug bug)
         {
 
-            Console.WriteLine("Bug incomming ...bug id is " + bug.id);
-
-            //See if this bug already exist
-            //   Bug newbug = pGContext.Bugs.Where(b => b.id == bug.id).FirstOrDefault();
-
-            //if it already exist then we need to update the bug not add it.
-            //     newbug = bug;
-
-            // if (bug.id == 54)
-            // {
-            ////     pGContext.Bugs.Attach(bug);
-            ////     pGContext.Entry(bug).State = EntityState.Modified;
-
-            //  //   pGContext.SaveChanges();
-            //     Console.WriteLine("Trying to update bug");
-            //     pGContext.Update(newbug);
-
-            // }else
-            // {
-            //  //   pGContext.Add(bug);
-            // }
-
-           
-
+            Console.WriteLine("Bug incomming ...bug id is " + bug.id);        
             Console.WriteLine("Post has been called again");
             //  return RedirectToAction("Counter");
             //  ActionResult actionResult;
@@ -121,14 +102,7 @@ namespace BlazorBugOne.Server.Controllers
             Console.WriteLine(bug.description);
             Console.WriteLine(bug.summary);
             Console.WriteLine("project name is " + bug.project?.name);
-            Console.WriteLine("firstname is " + bug.person?.firstname);
-
-            //   Person person = new Person();
-
-            //  bug.person.firstname = person.firstname;
-            //     pGContext.Add(person);
-
-            //   bug.person = person;
+            Console.WriteLine("firstname is " + bug.personAssigned?.firstname);
 
             pGContext.Update(bug);
             pGContext.SaveChanges();
@@ -152,12 +126,6 @@ namespace BlazorBugOne.Server.Controllers
 
             int bugcount = pGContext.Bugs.Count();
             string description = "";
-            //   Bug newbug;
-            //bug.description = "I am a delete bug #1";
-            ////pGContext.Add()
-            //pGContext.Add(bug);
-            //pGContext.SaveChanges();
-
 
 
             if (bugcount >= 0)
@@ -241,8 +209,8 @@ namespace BlazorBugOne.Server.Controllers
         {
             // id = 56;
             //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
-            //   showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).ToList();
-            var onebug = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).Include(bug => bug.assignedto).Where(b => b.id == id).FirstOrDefault();
+            //   showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).ToList();
+            var onebug = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).Include(bug => bug.personAssigned).Where(b => b.id == id).FirstOrDefault();
             string oneJson = JsonSerializer.Serialize(onebug);
             Console.WriteLine(oneJson);
             return oneJson;
@@ -256,7 +224,7 @@ namespace BlazorBugOne.Server.Controllers
         {
             // id = 56;
             //  var onebug = pGContext.Bugs.Where(b => b.id == id).FirstOrDefault();
-            //   showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).ToList();
+            //   showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).ToList();
             var oneperson = pGContext.People.Where(p => p.id == id).First();
 
             string oneJson = JsonSerializer.Serialize(oneperson);
@@ -286,15 +254,44 @@ namespace BlazorBugOne.Server.Controllers
         [HttpPost("DeletePerson")]
         public IActionResult DeletePerson(Person person)
         {
+            IActionResult response;
             Console.WriteLine("Post has been called to delete a person " + person.id);
             //  return RedirectToAction("Counter");
             //  ActionResult actionResult;
-            IActionResult response = Ok(new { result = "DeletedPerson" });
 
             //     Console.WriteLine(bug.description);
             //Console.WriteLine(bug.summary);
-            pGContext.Remove(person);
-            pGContext.SaveChanges();
+
+            int mycount = pGContext.Bugs.Where(b => b.personDiscovered.id == person.id).Count();
+
+                
+                            
+
+
+            if (mycount > 0)
+            {
+                 response = Ok(new { result = "DeletedPerson" });
+                 Console.WriteLine("Sorry, This user has {mycount} bugs assigned to them. \r\n Please assign to another user first.");
+            }else
+            {
+                 response = Ok(new { result = "{ 'fruit':'Apple','size':'Large','color': 'Red'}" });
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine("");
+                Console.WriteLine("");
+
+
+                Console.WriteLine("mycount is " + mycount);
+                pGContext.Remove(person);
+                pGContext.SaveChanges();
+            }
+
+
+
+          //  return Content("<xml>This is poorly formatted xml.</xml>", "text/xml");
+
 
             return response;
 
@@ -317,7 +314,7 @@ namespace BlazorBugOne.Server.Controllers
 
             //https://docs.microsoft.com/en-us/ef/core/querying/related-data/#lazy-loading
             //note the using entity core above to get the include option
-            showbugs = pGContext.Bugs.Include(bug => bug.person).Include(bug => bug.project).Include(bug => bug.assignedto).ToList();
+            showbugs = pGContext.Bugs.Include(bug => bug.personAssigned).Include(bug => bug.project).Include(bug => bug.personAssigned).ToList();
 
               
 
@@ -327,12 +324,12 @@ namespace BlazorBugOne.Server.Controllers
             foreach (var item in pGContext.Bugs)
             {
                 Console.WriteLine("Person:");
-                if (item.person != null)
+                if (item.personDiscovered != null)
                 {
                     Console.WriteLine("Person is not null!!!!");
                     Console.WriteLine(item.description);
 
-                    Console.WriteLine(item.person.firstname);
+                    Console.WriteLine(item.personDiscovered.firstname);
                     Console.WriteLine("Priority is " + item.priority);
                 }else
                 {

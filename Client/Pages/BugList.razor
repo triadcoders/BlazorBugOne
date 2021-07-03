@@ -21,7 +21,7 @@
         @*<MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x=>x.progressreport)">Progress Report</MudTableSortLabel></MudTh>*@
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.project?.name)">Project Name</MudTableSortLabel></MudTh>
         @*<MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x=>x.targetdate)">Target Completion Date</MudTableSortLabel></MudTh>*@
-        <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.person?.firstname)">Assigned To</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.personAssigned?.firstname)">Assigned To</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.priority)">Priority</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x => x.lifecycle)">Life Cycle</MudTableSortLabel></MudTh>
         @*<MudTh><MudTableSortLabel Enabled="@enabled" SortBy="new Func<Element, object>(x=>x.Sign)">Sign</MudTableSortLabel></MudTh>
@@ -35,7 +35,7 @@
         <MudTd DataLabel="summary">@context.summary</MudTd>
         <MudTd DataLabel="project">@context.project?.name</MudTd>
         @*<MudTd DataLabel="targetdate">@context.targetdate</MudTd>*@
-        <MudTd DataLabel="firstname">@context.person?.firstname</MudTd>
+    <MudTd DataLabel="firstname">@context.personAssigned?.firstname @context.personAssigned?.lastname </MudTd>
         <MudTd DataLabel="priority">@context.priority</MudTd>
         <MudTd DataLabel="lifecycle">@context.lifecycle</MudTd>
         <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
@@ -113,9 +113,9 @@
         bugs = await httpClient.GetFromJsonAsync<List<Bug>>("BugManage/GetBugs");
         foreach (var item in bugs)
         {
-            if (item.person != null)
+            if (item.personDiscovered != null)
             {
-                Console.WriteLine("Person name is " + item.person.firstname);
+                Console.WriteLine("Person name is " + item.personDiscovered.firstname);
             }
         }
 

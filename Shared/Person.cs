@@ -14,7 +14,7 @@ namespace BlazorBugOne.Shared
         public int id { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
-        public string usertype { get; set; } = "user";
+        public string usertype { get; set; } = "User";
 
         //  public Func<string, string, string> FullName { get; set; }
 

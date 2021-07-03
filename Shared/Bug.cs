@@ -15,8 +15,8 @@ namespace BlazorBugOne.Shared
         public string summary { get; set; }
         public string description { get; set; }
 
-        public Person person { get; set; }
-        public Person assignedto { get; set; }
+        public Person personDiscovered { get; set; }
+        public Person personAssigned { get; set; }
         public DateTime created { get; set; }
 
         public Project project { get; set; }

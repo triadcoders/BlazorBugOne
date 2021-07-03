@@ -81,10 +81,6 @@
     Bug bug = new();
     Person person = new();
 
-
-
-
-
     public string Text { get; set; } = "????";
     public string ButtonText { get; set; } = "Click Me";
     public int ButtonClicked { get; set; }
@@ -101,7 +97,14 @@
             firstName = person.firstname;
             lastName = person.lastname;
             userid = personid;
+            if (person.usertype != null)
+            {
+                userType = person.usertype;
 
+            }else
+            {
+                userType = "User";
+            }
         }
     }
 
@@ -111,7 +114,33 @@
         person.firstname = firstName;
         person.lastname = lastName;
         person.usertype = userType;
-        person.id = int.Parse(userid);
-        var result = await Http.PostAsJsonAsync("BugManage/AddPerson", person);
 
-    } }
+        //if (userid != null)
+        //{
+
+        //    Console.WriteLine("userid is "+ userid);
+        //    person.id = int.Parse(userid);
+
+        //}else
+        //{
+        //    // Console.WriteLine("userid is " +userid.ToString());
+        //    if (person != null)
+        //    {
+        //        Console.WriteLine("Attempting to parse userid:"+ userid.ToString());
+        //        person.id = int.Parse(userid);
+        //    }
+
+        //}
+        Console.WriteLine("userid is " + userid);
+        if (userid != null)
+        {        
+            if (int.Parse(userid) > 0)
+            {
+                person.id = int.Parse(userid);
+            }
+        }
+
+    var result = await Http.PostAsJsonAsync("BugManage/AddPerson", person);
+
+}
+    }

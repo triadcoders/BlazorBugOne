@@ -21,7 +21,7 @@
         <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.usertype)">User Level</MudTableSortLabel></MudTh>
         <MudTh>Edit</MudTh>
         <MudTh>Delete</MudTh>
-
+       
     </HeaderContent>
     <RowTemplate>
         <MudTd @onclick="@(() => EditPerson(@context))" DataLabel="personid">@context.id</MudTd>
@@ -92,6 +92,8 @@
 
         Console.WriteLine(result);
         await UpDatePeople();
+
+        Snackbar.Add(result.ToString());
 
     }
 

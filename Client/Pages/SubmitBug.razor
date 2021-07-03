@@ -5,7 +5,7 @@
 
 
 
-@page "/SubmitBUg"
+@page "/SubmitBug"
 @page "/SubmitBug/{bugid}"
 @*<MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
@@ -14,6 +14,13 @@
 
 <h1>Ultra Bug Tracker 2000 X Mega Extreme Ultimate Edition  v1.0</h1>
 
+@if (selecteduser !=null)
+{
+  <h1>Selected User Id is @selecteduser</h1>
+}else{
+<h1>No user selected yet</h1>
+}
+
 <MudCard>
     <MudCardContent>
         <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
@@ -21,22 +28,43 @@
             <MudTextField T="string" @bind-Text="@detailsText" Label="Detail description" Required="false" RequiredError="Details recommended!" />
             @*<MudTextField T="string" Label="Who Discovered" RequiredError="Person is required" />*@
 
-            <MudSelect T="string" @bind-Text="@firstname" Label="Who Discovered" RequiredError="Person is required">
+           <MudSelect T="string" @bind-Text="@selecteduser" Label="Who Discovered" RequiredError="Person is required">
 
-                <MudSelectItem Value="@("Bob")" />
-                <MudSelectItem Value="@("Mike")" />
-                <MudSelectItem Value="@("Dork")" />
-                <MudSelectItem Value="@("Pig")" />
-            </MudSelect>
+            @*<MudTd DataLabel="usertype">@context.usertype </MudTd>*@
 
 
+            @if (peeps != null)
+            {
+            foreach ( var item in peeps )
+            {
+            <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
+            }
+            }
 
-            <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
-                <MudSelectItem Value="@("Bob")" />
-                <MudSelectItem Value="@("Mike")" />
-                <MudSelectItem Value="@("Dork")" />
-                <MudSelectItem Value="@("Pig")" />
-            </MudSelect>
+
+
+        </MudSelect>
+
+
+
+        <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
+
+
+            @if (peeps != null)
+            {
+            foreach ( var item in peeps )
+            {
+            <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
+            }
+            }
+
+            @*<MudSelectItem Value="@("Bob")" />
+            <MudSelectItem Value="@("Mike")" />
+            <MudSelectItem Value="@("Dork")" />
+            <MudSelectItem Value="@("Pig")" />*@
+
+
+        </MudSelect>
 
 
 
@@ -114,21 +142,26 @@
 </MudCard>
 
 @*@if (resultstring != null)
-{
-    <h1>@resultstring</h1>
+    {
+        <h1>@resultstring</h1>
 
-}
-else
-{
-    <h1>Result String is null</h1>
-}*@
+    }
+    else
+    {
+        <h1>Result String is null</h1>
+    }*@
 
 
 
-@code {
-    //https://www.donedone.com/blog/bug-tracking-template
+@code { //https://www.donedone.com/blog/bug-tracking-template
     bool success;
 
+
+    string selecteduser;
+    string assignedTo;
+
+
+    string fart = "FART";
 
     string reportText = "NA";
     string summaryText = "NA";
@@ -139,12 +172,13 @@ else
     string projectText = "NA";
     string firstname = "NA";
     string lastname = "NA";
-    string assignedTo = "NA";
+
     string[] errors = { };
     string resultstring = "";
     string resolutionText = "NA";
     string priorityText = "NA";
     string lifeCycleText = "NA";
+    List<Person> peeps = new();
 
     [Parameter]
     public string bugid { get; set; }
@@ -153,7 +187,7 @@ else
     //  HttpResponseMessage result;
     //    MudTextField<string> pwField1;
     MudForm form;
-    Bug bug = new();
+    //  Bug bug = new();
 
 
 
@@ -170,126 +204,135 @@ else
     }
 
 
+    Bug newbug;
+    Person person;
+    Person assignedtoperson;
 
     protected override async Task OnInitializedAsync()
     {
-
-
-        // var result2 = await Http.PostAsJsonAsync("BugManage/GetBug/" + bugid, bug);
+        peeps = await Http.GetFromJsonAsync<List<Person>>("BugManage/GetPeople/");
 
         if (bugid != null)
         {
+            Snackbar.Add("bug id is " + bugid);
+            newbug = await Http.GetFromJsonAsync<Bug>("BugManage/GetBug/" + bugid);
 
-            Bug newbug = await Http.GetFromJsonAsync<Bug>("BugManage/GetBug/" + bugid);
+
+            Snackbar.Add("the selected newbug  person is " + newbug.personAssigned.firstname);
+            Snackbar.Add("the selected newbug assignee is " + newbug.personAssigned.firstname);
+
+
+            //This is the user that discovered the bug.
+            if (newbug.personAssigned != null)
+            {
+                person = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + newbug.personAssigned.id);  //we have the original bug id here
+                                                                                                          //   person = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + selecteduser);
+                newbug.personAssigned = person;
+                selecteduser = person.id.ToString();
+
+            }else
+            {
+                Snackbar.Add("the selected newbug person is null");
+            }
+
+            //This is the user that is assigned to the bug.
+            if (newbug.personAssigned != null)
+            {
+                assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + newbug.personAssigned.id);  //we have the original bug id here
+                                                                                                                        //    assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + assignedTo);
+                newbug.personAssigned = assignedtoperson;
+                assignedTo = assignedtoperson.id.ToString();
+
+            }
+            else
+            {
+                Snackbar.Add("the selected assignee person is null");
+            }
+
 
             summaryText = newbug.summary;
             detailsText = newbug.description;
-
-
             projectText = newbug.project.name;
-
-
-            firstname = newbug.person.firstname;
+            firstname = newbug.personAssigned.firstname;
             priorityText = newbug.priority;
             lifeCycleText = newbug.lifecycle;
-            assignedTo = newbug.assignedto.firstname;
-
-            //string reportText = "NA";
-            //string summaryText = "NA";
-            //string detailsText = "NA";
-            //DateTime? discoverydate = DateTime.Today;
-            //DateTime? resolutiondate = DateTime.Today;
-            //string progressReport = "NA";
-            //string projectText = "NA";
-            //string firstname = "NA";
-            //string assignedTo = "NA";
-            //string[] errors = { };
-            //string resultstring = "NA";
-            //string resolutionText = "NA";
-            //string priorityText = "NA";
-            //string lifeCycleText = "NA";
-
-
 
 
         }
-
     }
 
 
+
+    private async Task EditPerson(Person person)
+    {
+        // / BugManage / GetPeople
+        Console.WriteLine(person.firstname);
+    }
+
     private async Task BugSubmit()
     {
-        // summaryText = "Submitted";
 
-
-        bug.created = discoverydate.Value;
-        bug.summary = summaryText;
-        bug.description = detailsText;
-        //      bug.progressreport = progressReport;
-        //       bug.resolutionsummary = resolutionText;
-
-        Project project = new();
-        project.name = projectText;
-        bug.project = project;
-
-        Person person = new Person();
-        person.firstname = firstname;
-        bug.person = person;
-
-
-        Person assignee = new();
-        assignee.firstname = assignedTo;
-        bug.assignedto = assignee;
-
-
-        bug.priority = priorityText;
-        bug.lifecycle = lifeCycleText;
-
-
-        //try
-        //{
-
-        if (bugid != null)
+        //This is the user that discovered the bug.
+        if (selecteduser != null)
         {
-            if (int.Parse(bugid) > 0)
-            {
-                bug.id = int.Parse(bugid);
-            }
+            Snackbar.Add("Searching for person at id: " + selecteduser);
+            person = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + selecteduser); //we want to update the person from the html selection
+            newbug.personAssigned = person;
+            Snackbar.Add("the selected person is " + person.firstname);
         }
 
-        //}
-        //catch (Exception ex)
-        //{
+        //This is the user that is assigned to the bug.
+        if (assignedTo != null)
+        {
+            Snackbar.Add("Searching for assignedto at id: " + assignedTo);
 
-        //    throw ex;
-        //}
+            if (assignedtoperson == null) assignedtoperson = new();
+            assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + assignedTo); //we want to update the assignedperson from the html selection
+            newbug.personAssigned = assignedtoperson;
+            Snackbar.Add("the selected assignee is " + person.firstname);
+
+        }
 
 
-        // bug.id = 54;
 
-        var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", bug);
+
+
+        //summaryText = newbug.summary;
+        //detailsText = newbug.description;
+        //projectText = newbug.project.name;
+        //firstname = newbug.personAssigned.firstname;
+        //priorityText = newbug.priority;
+        //lifeCycleText = newbug.lifecycle;
+        //assignedTo = newbug.personAssigned.id.ToString();
+        //selecteduser = newbug.personAssigned.firstname;
+
+        newbug.created = discoverydate.Value;
+        newbug.description = detailsText;
+        newbug.summary = summaryText;
+        newbug.status = priorityText;
+        newbug.lifecycle = lifeCycleText;
+
+        Project project = new Project();
+        project.name = projectText;
+        newbug.project = project;
+
+        //Snackbar.Add("newbug person is " + newbug.personAssigned.id);
+        //Snackbar.Add("newbug assignee is " + newbug.personAssigned.id);
+
+
+        Snackbar.Add("Submitting bug with assignedto firstname is: " + newbug.personAssigned.firstname);
+        Snackbar.Add("Submitting bug with selecteduser firstname is: " + newbug.personAssigned.firstname);
+
+        var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", newbug);
         //    resultstring = await result.Content.ReadAsStringAsync();
         resultstring = result.StatusCode.ToString();
 
         if (resultstring == "OK")
         {
-            //resultstring = "Success!";
-
-            //resultstring = "";
-
             Snackbar.Add("Success!");
         }
 
 
-
-
-        //  Console.WriteLine("Bug Person is " + bug.person.firstname);
-        //  summaryText = resultstring;
-
-        // Console.WriteLine("Status code again is " + resultstring);
-
         this.StateHasChanged();
 
-    }
-
-}
+    } }
