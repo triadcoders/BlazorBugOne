@@ -218,7 +218,7 @@
 
         if (bugid != null)
         {
-            Snackbar.Add("bug id is " + bugid);
+            //Snackbar.Add("bug id is " + bugid);
             newbug = await Http.GetFromJsonAsync<Bug>("BugManage/GetBug/" + bugid);
 
 
@@ -230,13 +230,13 @@
                 newbug.personDiscovered = discoverdPerson;
                 selecteduser = discoverdPerson.id.ToString();
 
-                Snackbar.Add("the discoveredPerson newbug is " + newbug?.personDiscovered?.firstname ?? "discovered.firstname is null");
+                //Snackbar.Add("the discoveredPerson newbug is " + newbug?.personDiscovered?.firstname ?? "discovered.firstname is null");
                 Console.WriteLine("The discoveredPerson is " + newbug?.personDiscovered?.firstname ?? "discovered.firstname is null");
 
             }
             else
             {
-                Snackbar.Add("the discovredPerson newbug is null");
+                //   Snackbar.Add("the discovredPerson newbug is null");
                 Console.WriteLine("The newbug.personDiscovered is null");
             }
 
@@ -247,12 +247,12 @@
                                                                                                                             //    assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + assignedTo);
                 newbug.personAssigned = assignedtoperson;
                 assignedTo = assignedtoperson.id.ToString();
-                Snackbar.Add("the selected newbug assignee is " + newbug?.personAssigned?.firstname ?? "assigned.firstname is null");
+                //  Snackbar.Add("the selected newbug assignee is " + newbug?.personAssigned?.firstname ?? "assigned.firstname is null");
 
             }
             else
             {
-                Snackbar.Add("the selected assignee person is null");
+                //  Snackbar.Add("the selected assignee person is null");
             }
 
 
@@ -270,7 +270,7 @@
 
     private void  FireMessage()
     {
-        Snackbar.Add("Fired!!");
+        //Snackbar.Add("Fired!!");
     }
 
     private void EditConteEdixt_OnFieldChanged(object sender,
@@ -296,7 +296,7 @@
             discoverdPerson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + selecteduser); //we want to update the person from the html selection
                                                                                                           //    newbug.personDiscovered = discoverdPerson;
             newbug.personDiscovered = discoverdPerson;
-            Snackbar.Add("The discoveredPErson is beign added to newbug " + discoverdPerson.firstname);
+            //   Snackbar.Add("The discoveredPErson is beign added to newbug " + discoverdPerson.firstname);
         }
 
 
@@ -308,14 +308,29 @@
 
             if (assignedtoperson == null) assignedtoperson = new();
             assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + assignedTo); //we want to update the assignedperson from the html selection                                                                                                      //     newbug.personAssigned = assignedtoperson;
-            
-            
+
+
             newbug.personAssigned = assignedtoperson;
 
         }
 
 
         newbug.created = discoverydate.Value;
+
+
+        if (discoverydate.Value.Ticks > DateTime.Now.Ticks)
+        {
+            Snackbar.Add("Not setting time to the future, unless you have a MrFusion.");
+            discoverydate = DateTime.Now;
+        }
+        else
+        {
+            Snackbar.Add("Ticks are" + discoverydate.Value.Ticks.ToString());
+            Snackbar.Add("Ticks are" + DateTime.Now.Ticks.ToString());
+        }
+
+
+
         newbug.description = detailsText;
         newbug.summary = summaryText;
         // newbug.status = priorityText;
@@ -330,8 +345,8 @@
         //Snackbar.Add("newbug assignee is " + newbug.personAssigned.id);
 
 
-        Snackbar.Add("Submitting bug with assignedto firstname is: " + newbug?.personDiscovered?.firstname ?? "No user discovered this bug");
-        Snackbar.Add("Submitting bug with selecteduser firstname is: " + newbug?.personAssigned?.firstname ?? "No person was assigned to this bug");
+        // Snackbar.Add("Submitting bug with assignedto firstname is: " + newbug?.personDiscovered?.firstname ?? "No user discovered this bug");
+        //  Snackbar.Add("Submitting bug with selecteduser firstname is: " + newbug?.personAssigned?.firstname ?? "No person was assigned to this bug");
 
         Console.WriteLine("Submitting bug with assignedto firstname is: " + newbug?.personDiscovered?.firstname ?? "No user discovered this bug");
         Console.WriteLine("Submitting bug with selecteduser firstname is: " + newbug?.personAssigned?.firstname ?? "No person was assigned to this bug");

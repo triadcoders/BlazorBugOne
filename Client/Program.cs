@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using MudBlazor.Services;
-
+using MudBlazor;
 
 namespace BlazorBugOne.Client
 {
@@ -23,9 +23,9 @@ namespace BlazorBugOne.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddMudServices();
-
+            //builder.Services.AddScoped<DialogService>();
             await builder.Build().RunAsync();
-
+           
 
 
 

@@ -10,137 +10,152 @@
 
 
 
-@inject HttpClient httpClient
-@inject NavigationManager NavigationManager
+
+    @inject HttpClient httpClient
+    @inject NavigationManager NavigationManager
 
 
-@page "/EditUser"
-@page "/EditUser/{personid}"
+    @page "/EditUser"
+    @page "/EditUser/{personid}"
 
 
-<h1>Add/Update User</h1>
-
-
-<MudCard>
-    <MudCardContent>
-        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-
-
-            <MudTextField T="string" @bind-Text="userid"  ReadOnly Label="User Id"  />
-            <MudTextField T="string" @bind-Text="firstName" Label="First Name" Required="true" RequiredError="First name is required!" />
-            <MudTextField T="string" @bind-Text="lastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
-
-
-            <div class="d-flex">
-                <MudRadioGroup T="string" @bind-SelectedOption="@userType" Required="true" RequiredError="Priority">
-                    <MudRadio Option="@("User")">User</MudRadio>
-                    <MudRadio Option="@("Admin")">Admin</MudRadio>
-                    <MudRadio Option="@("Disabled")">Disabled</MudRadio>
-                </MudRadioGroup>
-            </div>
-
-
-
-        </MudForm>
-    </MudCardContent>
-    <MudCardActions>
-        @*<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Submit Bug</MudButton>*@
-        <MudButton Variant="Variant.Filled" OnClick="AddPerson" Color="Color.Primary" Class="ml-auto">Add User</MudButton>
-    </MudCardActions>
+    <h1>Add/Update User</h1>
 
 
 
 
-</MudCard>
-
-@code { bool success;
-
-    string userid;
-    string reportText = "NA";
-    string firstName;
-    string lastName;
-    string detailsText = "NA";
-    DateTime? discoverydate = DateTime.Today;
-    DateTime? resolutiondate = DateTime.Today;
-    string progressReport = "NA";
-    string projectText = "NA";
-    string assignedTo = "NA";
-    string[] errors = { };
-    string resultstring = "";
-    string resolutionText = "NA";
-    string userType = "NA";
-    string lifeCycleText = "NA";
-
-    [Parameter]
-    public string personid { get; set; }
 
 
-    //  HttpResponseMessage result;
-    //    MudTextField<string> pwField1;
-    MudForm form;
-    Bug bug = new();
-    Person personNew = new();
-
-    public string Text { get; set; } = "????";
-    public string ButtonText { get; set; } = "Click Me";
-    public int ButtonClicked { get; set; }
+   
+   
+    
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        // var result2 = await Http.PostAsJsonAsync("BugManage/GetBug/" + bugid, bug);
-        if (personid != null)
-        {
 
-            Person personNew2 = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + personid);
 
-            firstName = personNew2.firstname;
-            lastName = personNew2.lastname;
-            userid = personid;
-            if (personNew2.usertype != null)
+
+        <MudCard>
+            <MudCardContent>
+                <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+
+
+                    <MudTextField T="string" @bind-Text="userid" ReadOnly Label="User Id" />
+                    <MudTextField T="string" @bind-Text="firstName" Label="First Name" Required="true" RequiredError="First name is required!" />
+                    <MudTextField T="string" @bind-Text="lastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
+
+
+                    <div class="d-flex">
+                        <MudRadioGroup T="string" @bind-SelectedOption="@userType" Required="true" RequiredError="Priority">
+                            <MudRadio Option="@("User")">User</MudRadio>
+                            <MudRadio Option="@("Admin")">Admin</MudRadio>
+                            <MudRadio Option="@("Disabled")">Disabled</MudRadio>
+                        </MudRadioGroup>
+                    </div>
+
+
+
+                </MudForm>
+            </MudCardContent>
+            <MudCardActions>
+                @*<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Submit Bug</MudButton>*@
+                <MudButton Variant="Variant.Filled" OnClick="AddPerson" Color="Color.Primary" Class="ml-auto">Add User</MudButton>
+            </MudCardActions>
+
+
+
+
+        </MudCard>
+
+        @code { bool success;
+
+            string userid;
+            string reportText = "NA";
+            string firstName;
+            string lastName;
+            string detailsText = "NA";
+            DateTime? discoverydate = DateTime.Today;
+            DateTime? resolutiondate = DateTime.Today;
+            string progressReport = "NA";
+            string projectText = "NA";
+            string assignedTo = "NA";
+            string[] errors = { };
+            string resultstring = "";
+            string resolutionText = "NA";
+            string userType = "NA";
+            string lifeCycleText = "NA";
+
+            [Parameter]
+            public string personid { get; set; }
+
+
+            //  HttpResponseMessage result;
+            //    MudTextField<string> pwField1;
+            MudForm form;
+            Bug bug = new();
+            Person personNew = new();
+
+            public string Text { get; set; } = "????";
+            public string ButtonText { get; set; } = "Click Me";
+            public int ButtonClicked { get; set; }
+
+
+            protected override async Task OnInitializedAsync()
             {
-                userType = personNew2.usertype;
+                // var result2 = await Http.PostAsJsonAsync("BugManage/GetBug/" + bugid, bug);
+                if (personid != null)
+                {
 
-            }else
-            {
-                userType = "User";
+                    Person personNew2 = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + personid);
+
+                    firstName = personNew2.firstname;
+                    lastName = personNew2.lastname;
+                    userid = personid;
+                    if (personNew2.usertype != null)
+                    {
+                        userType = personNew2.usertype;
+
+                    }
+                    else
+                    {
+                        userType = "User";
+                    }
+                }
             }
-        }
-    }
+
+    
 
 
-    private async Task AddPerson()
-    {
-        personNew.firstname = firstName;
-        personNew.lastname = lastName;
-        personNew.usertype = userType;
-
-        //if (userid != null)
-        //{
-
-        //    Console.WriteLine("userid is "+ userid);
-        //    person.id = int.Parse(userid);
-
-        //}else
-        //{
-        //    // Console.WriteLine("userid is " +userid.ToString());
-        //    if (person != null)
-        //    {
-        //        Console.WriteLine("Attempting to parse userid:"+ userid.ToString());
-        //        person.id = int.Parse(userid);
-        //    }
-
-        //}
-        Console.WriteLine("userid is " + userid);
-        if (userid != null)
-        {
-            if (int.Parse(userid) > 0)
+            private async Task AddPerson()
             {
-                personNew.id = int.Parse(userid);
-            }
-        }
+                personNew.firstname = firstName;
+                personNew.lastname = lastName;
+                personNew.usertype = userType;
 
-        var result = await Http.PostAsJsonAsync("BugManage/AddPerson", personNew);
+                //if (userid != null)
+                //{
 
-    }
-    }
+                //    Console.WriteLine("userid is "+ userid);
+                //    person.id = int.Parse(userid);
+
+                //}else
+                //{
+                //    // Console.WriteLine("userid is " +userid.ToString());
+                //    if (person != null)
+                //    {
+                //        Console.WriteLine("Attempting to parse userid:"+ userid.ToString());
+                //        person.id = int.Parse(userid);
+                //    }
+
+                //}
+                Console.WriteLine("userid is " + userid);
+                if (userid != null)
+                {
+                    if (int.Parse(userid) > 0)
+                    {
+                        personNew.id = int.Parse(userid);
+                    }
+                }
+
+                var result = await Http.PostAsJsonAsync("BugManage/AddPerson", personNew);
+
+            } }
