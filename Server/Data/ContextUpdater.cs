@@ -29,36 +29,103 @@ namespace BlazorBugOne.Server
 
         public static async Task UpdateBug(Bug bugupdate)
         {
+
+      
+
+
+
             // PGContext pGContext;
             using (PGContext pGContext = new())
             {
-               // pGContext.Dispose();
-             
-
-             //   bugupdate = pGContext.Bugs.Include(bug => bug.personDiscovered).Where(d => d.id == bugupdate.id).FirstOrDefault(); //Include(bug => bug.personAssigned).Where(b => b.id == bugupdate.id).FirstOrDefault();
-                pGContext.Update(bugupdate);
-                await pGContext.SaveChangesAsync();
-
-                    //bugupdate = pGContext.Bugs
-                    //.Include(bug => bug.personAssigned)
-                    //.Where(b => b.personAssigned.id == bugupdate.personAssigned.id)
-                    //.Include(bug => bug.personDiscovered)
-                    //.Where(bug => bug.personDiscovered.id == bugupdate.personDiscovered.id)
-                    //.FirstOrDefault();
+                // pGContext.Dispose();
 
 
-                
+                // pGContext.Entry(bugupdate).State = EntityState.Detached;
+
+                //      pGContext.ChangeTracker.Clear();
+
+                //   bugupdate = pGContext.Bugs.Include(bug => bug.personDiscovered).Where(d => d.id == bugupdate.id).FirstOrDefault(); //Include(bug => bug.personAssigned).Where(b => b.id == bugupdate.id).FirstOrDefault();
+                //Person one = new();
+                //Person two = new();
+
+                //one = pGContext.People.Where(p => p.id == bugupdate.personDiscovered.id).AsNoTracking().FirstOrDefault();
+                //two = pGContext.People.Where(p => p.id == bugupdate.personAssigned.id).AsNoTracking().FirstOrDefault();
+
+
+                ////bugupdate = pGContext.Bugs
+                //.Include(bug => bug.personAssigned)
+                //.Where(b => b.personAssigned.id == bugupdate.personAssigned.id)
+                //.Include(bug => bug.personDiscovered)
+                //.Where(bug => bug.personDiscovered.id == bugupdate.personDiscovered.id).AsNoTracking()
+                //.FirstOrDefault();
+
+                //pGContext.Entry(bugupdate.personDiscovered).State = EntityState.Detached;
+                //pGContext.Entry(bugupdate.personAssigned).State = EntityState.Detached;
+
+                //pGContext.Entry(bugupdate).State = EntityState.Detached;
+
+                //bugupdate.personAssigned = two;
+                //bugupdate.personDiscovered = one;
+
+                //pGContext.People.Attach(one);
+                //pGContext.People.Attach(two);
+
+                //   pGContext.Bugs.Attach(bugupdate);
+
+                pGContext.ChangeTracker.Clear();
+                pGContext.Attach(bugupdate.personDiscovered);
+                pGContext.Entry(bugupdate.personDiscovered).State = EntityState.Detached;
+                pGContext.Entry(bugupdate.project).State = EntityState.Detached;
+
+                Console.WriteLine(pGContext.Entry(bugupdate.personDiscovered).State.ToString());
+                Console.WriteLine(pGContext.Entry(bugupdate.personAssigned).State.ToString());
+
+                //  pGContext.Entry(bugupdate).State = EntityState.Detached;
+
+                // pGContext.Bugs.Add(bugupdate);
+                //pGContext.People.Add(bugupdate.personAssigned);
+                //pGContext.People.Add(bugupdate.personDiscovered);
+
+
+
 
                 //    .Include(a => a.personDiscovered.id == bugupdate.personDiscovered))
-
+                Console.WriteLine("****");
+                Console.WriteLine("****");
+                Console.WriteLine("****");
+                Console.WriteLine("****");
+                Console.WriteLine("****");
+                Console.WriteLine("****");
 
                 Console.WriteLine("Bugupdate assinged is " + bugupdate?.personAssigned?.firstname ?? "null I think");
                 Console.WriteLine("Bugupdate  discovered is " + bugupdate?.personDiscovered?.firstname ?? "null I think");
 
-                
+                Bug newbug = new();
+                newbug = pGContext.Bugs.Where(b => b.id == bugupdate.id).AsNoTracking().FirstOrDefault();
+                newbug.personDiscovered = pGContext.People.Where(p => p.id == bugupdate.personDiscovered.id).AsNoTracking().FirstOrDefault();
 
-                pGContext.Update(bugupdate);
+               // Console.WriteLine("newbug is A-" + newbug.personAssigned?.firstname ?? "NA" + " D-" + newbug.personDiscovered?.firstname ?? "NA");
+                Console.WriteLine("newbug is D-" + newbug.personDiscovered.firstname);
+                Console.WriteLine("newbug is A-" + newbug.personAssigned?.firstname);
+           
+
+               // pGContext.Update(bugupdate);
+                pGContext.Update(newbug);
                 await pGContext.SaveChangesAsync();
+
+
+                pGContext.ChangeTracker.Clear();
+                pGContext.Attach(bugupdate.personAssigned);
+                pGContext.Entry(bugupdate.personAssigned).State = EntityState.Detached;
+                pGContext.Entry(bugupdate.project).State = EntityState.Detached;
+                         
+                Bug newbug2 = new();
+                newbug2 = pGContext.Bugs.Where(b => b.id == bugupdate.id).AsNoTracking().FirstOrDefault();
+                newbug2.personAssigned = pGContext.People.Where(p => p.id == bugupdate.personAssigned.id).AsNoTracking().FirstOrDefault();
+                pGContext.Update(newbug2);
+                await pGContext.SaveChangesAsync();
+
+
             }
         }
 

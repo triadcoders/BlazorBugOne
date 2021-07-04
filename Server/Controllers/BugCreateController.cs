@@ -77,20 +77,8 @@ namespace BlazorBugOne.Server.Controllers
         public async Task<IActionResult> DeleteBug(Bug bug)
         {
             Console.WriteLine("Post has been called to delete a bug " + bug.id);
-            //  return RedirectToAction("Counter");
-            //  ActionResult actionResult;
             IActionResult response = Ok(new { result = "TEST" });
-
-            //     Console.WriteLine(bug.description);
-            //Console.WriteLine(bug.summary);
-
-
-            //pGContext.Remove(bug);
-            //pGContext.SaveChanges();
-
-
             await ContextUpdater.UpdateBug(bug);
-
             return response;
 
         }
@@ -104,8 +92,6 @@ namespace BlazorBugOne.Server.Controllers
 
             Console.WriteLine("Bug incomming ...bug id is " + bug.id);        
             Console.WriteLine("Post has been called again");
-            //  return RedirectToAction("Counter");
-            //  ActionResult actionResult;
             IActionResult response = Ok(new { result = "Success" });
 
             Console.WriteLine(bug.description);
@@ -119,40 +105,12 @@ namespace BlazorBugOne.Server.Controllers
             Console.WriteLine("Bug Priority is " + bug.priority  );
             Console.WriteLine("Bug Assinged id is " + bug.personAssigned.id);
             Console.WriteLine("Bug discovered id is " + bug.personDiscovered.id);
-            //To Do add the get thing to get a new updated person thing.
 
-
-            //if (bug.personAssigned.id == bug.personDiscovered.id)
-            //{
-            //    bug.personDiscovered = bug.personAssigned;
-            //}
-
-
-
-            //Person one = bug.personAssigned;
-            //Person two = bug.personDiscovered;
-          //  pGContext.Update(bug);
-          //  pGContext.SaveChanges();
-
-            await ContextUpdater.UpdateBug(bug);
-            
-
-            //pGContext.Update(bug.personDiscovered);
-            //pGContext.SaveChanges();
-
-
-
-
+            await ContextUpdater.UpdateBug(bug);          
             return response;
 
         }
 
-
-        //public IActionResult MrPost()
-        //{
-        //    IActionResult response = Ok(new { result = "TEST" });
-        //    return response;
-        //}
 
 
 
@@ -160,18 +118,11 @@ namespace BlazorBugOne.Server.Controllers
         public string Delete() 
         {
 
-            //int bugcount = pGContext.Bugs.Count();
-          //  int bugcount = ContextUpdater.pGContext.Bugs.Count();
-
             int bugcount = ContextUpdater.GetBugCount(); //remember
-
             string description = "";
-
 
             if (bugcount >= 0)
             {
-              //  bug = pGContext.Bugs.Where(b => b.id == bugcount).FirstOrDefault();
-                //bug = ContextUpdater.pGContext.Bugs.OrderByDescending(b => b.id).FirstOrDefault();
                 bug = ContextUpdater.GetBugOrderByDesending();
             }
 
@@ -191,16 +142,7 @@ namespace BlazorBugOne.Server.Controllers
                 return "Bug was null on id " + bugcount;
             }
             
-            //var weatherForecast = new WeatherForecast
-            //{
-            //    Date = DateTime.Parse("2019-08-01"),
-            //    // TemperatureCelsius = 25,
-            //    Summary = "Hot"
-            //};
 
-            //string jsonString = JsonSerializer.Serialize(weatherForecast);
-
-            //return jsonString;
         }
 
         string myparam = "nada";
@@ -319,19 +261,8 @@ namespace BlazorBugOne.Server.Controllers
         {
             IActionResult response;
             Console.WriteLine("Post has been called to delete a person " + person.id);
-            //  return RedirectToAction("Counter");
-            //  ActionResult actionResult;
-
-            //     Console.WriteLine(bug.description);
-            //Console.WriteLine(bug.summary);
-
-         //   int mycount = ContextUpdater.pGContext.Bugs.Where(b => b.personDiscovered.id == person.id).Count();
-
             int mycount = ContextUpdater.GetPersonCountbyId(person.id);
-            
-           
-                            
-
+                     
 
             if (mycount > 0)
             {
