@@ -12,6 +12,8 @@ namespace BlazorBugOne.Shared
 
         [Key]
         public int id { get; set; }
+        
+        [MaxLength(50)]
         public string summary { get; set; }
         public string description { get; set; }
 

@@ -10,118 +10,180 @@
 
 
 
-    @page "/ListUsers"
+@page "/ListUsers"
 
 
 
 
 
-    <MudTable Items="@people" Hover="true" SortLabel="Sort By" Dense=true CommitEditTooltip="Save">
+<MudTable Items="@people" Hover="true" SortLabel="Sort By" Dense=true CommitEditTooltip="Save">
 
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.id)">User Id</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.firstname)">First Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.lastname)">Last Name</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.usertype)">User Level</MudTableSortLabel></MudTh>
-            <MudTh>Edit</MudTh>
-            <MudTh>Delete</MudTh>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.id)">User Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.firstname)">First Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.lastname)">Last Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Person, object>(x=>x.usertype)">User Level</MudTableSortLabel></MudTh>
+        <MudTh>Edit</MudTh>
+        <MudTh>Delete</MudTh>
 
-        </HeaderContent>
-
-
-
-        <RowTemplate>
-            <MudTd @onclick="@(() => EditPerson(@context))" DataLabel="personid">@context.id</MudTd>
-            <MudTd DataLabel="firstname">@context.firstname</MudTd>
-            <MudTd DataLabel="lastname">@context.lastname</MudTd>
-            <MudTd DataLabel="usertype">@context.usertype </MudTd>
-
-            <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => EditPerson(context))">Edit</MudButton></MudTd>
-            <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => Delete(context))">Delete</MudButton></MudTd>
-
-
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
-        </PagerContent>
-    </MudTable>
-
-    @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
-    @*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Admin Mode</MudSwitch>*@
-    @*<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info" Label="@(!enabled ? "User Mode" : "Admin Mode")" />*@
-
-    <MudButton @onclick="DeleteUser" Variant="Variant.Filled" Color="Color.Error">Delete Records</MudButton>
-
-
-    @code { //  List<Person> people = new();
+    </HeaderContent>
 
 
 
-        private EventCallback<ICollection<Person>> TableChanged { get; set; }
+    <RowTemplate>
+        <MudTd @onclick="@(() => EditPerson(@context))" DataLabel="personid">@context.id</MudTd>
+        <MudTd DataLabel="firstname">@context.firstname</MudTd>
+        <MudTd DataLabel="lastname">@context.lastname</MudTd>
+        <MudTd DataLabel="usertype">@context.usertype </MudTd>
+
+        <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => EditPerson(context))">Edit</MudButton></MudTd>
+        @*<MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => Delete(context))">Delete</MudButton></MudTd>*@
+        <MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => OpenDialog2(context.id))">Delete</MudButton></MudTd>
+        @*<MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="Delete">Delete</MudButton></MudTd>*@
+        @*<MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>*@
+
+
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+    </PagerContent>
+</MudTable>
+
+@*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable sorting on the Sign Column</MudSwitch>*@
+@*<MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Admin Mode</MudSwitch>*@
+@*<MudSwitch @onclick="() => FixToggle(enabled.ToString())" @bind-Checked="@enabled" Color="Color.Info" Label="@(!enabled ? "User Mode" : "Admin Mode")" />*@
+
+@*<MudButton @onclick="DeleteUser" Variant="Variant.Filled" Color="Color.Error">Delete Records</MudButton>*@
+
+
+<!--<div class="d-flex">
+    <MudButton OnClick="@( () => OpenDialog2(persontodeleteid))" Variant="Variant.Filled" Color="Color.Error">
+       DELETE USER 
+    </MudButton>-->
+    @*<MudRating SelectedValue="rating" Disabled="true" Class="mt-1 ml-3" />*@
+<!--</div>-->
+
+<MudDialog @bind-IsVisible="cansee">
+    <DialogContent>
+        <MudText>Confirm you want to delete user with id: @persontodeleteid</MudText>
+        <MudText>All bugs associated with this user will need to be reassigned</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@(() => Delete(persontodeleteid))">DELETE THE USER</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code { //  List<Person> people = new();
+    private int rating;
+
+    bool cansee = false;
+
+
+    //   private void OpenDialog() => cansee = true;
+
+    async Task OpenDialog2(int persontempid)
+    {
+
+        persontodeleteid = persontempid;
+        cansee = true;
+
+        Console.WriteLine("persontemp is " + persontempid);
+    }
 
 
 
-        private IEnumerable<Person> people = new List<Person>();
+
+    private EventCallback<ICollection<Person>> TableChanged { get; set; }
+
+    int persontodeleteid;
+
+    private IEnumerable<Person> people = new List<Person>();
+
+    void Cancel() => cansee = false;
 
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        await UpDatePeople();
+    }
+
+    //private void Submit()
+    //{
+    //    Snackbar.Add("Wooohoo");
+    //    MudDialog.Close(DialogResult.Ok(true));
+    //    Console.WriteLine("Clicky");
+    //    return "doit";
+    //}
+
+    protected private async Task UpDatePeople()
+    {
+        //    httpClient = new();
+        people = await httpClient.GetFromJsonAsync<List<Person>>("BugManage/GetPeople");
+
+        foreach (var item in people)
         {
-            await UpDatePeople();
-        }
-
-
-
-        protected private async Task UpDatePeople()
-        {
-            //    httpClient = new();
-            people = await httpClient.GetFromJsonAsync<List<Person>>("BugManage/GetPeople");
-
-            foreach (var item in people)
+            if (item.id > 0)
             {
-                if (item.id > 0)
-                {
-                    Console.WriteLine("Person name is " + item.firstname);
-                }
+                Console.WriteLine("Person name is " + item.firstname);
             }
         }
+    }
 
 
-        private void EditPerson(Person editPerson)
+    private void EditPerson(Person editPerson)
+    {
+        // await TableChanged.InvokeAsync(bugs);
+        //alert = "WeeeWooo WeeeWooo " + bug.id;
+        NavigationManager.NavigateTo("/EditUser/" + editPerson.id);
+    }
+
+    //private async Task DeleteUser()
+    //{
+
+    //    var parameters = new DialogParameters();
+    //    parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
+    //    parameters.Add("ButtonText", "Delete");
+    //    parameters.Add("Color", Color.Error);
+    //    parameters.Add("MyParam", false);
+
+
+    //    var options = new DialogOptions()
+    //    {
+    //        CloseButton = true,
+    //        MaxWidth = MaxWidth.ExtraSmall
+
+    //    };
+
+    //    var dialog = DialogService.Show<DialogDelete>("Delete", parameters, options);
+    //    var result = await dialog.Result;
+
+    //    //  DialogService.Show<DialogDelete>("Delete", parameters, options);
+
+    //    Snackbar.Add(parameters.Get<bool>("MyParam").ToString());
+    //    Snackbar.Add(result.ToString());
+    //}
+
+
+        private async Task Delete(int deletepersonid)
         {
-            // await TableChanged.InvokeAsync(bugs);
-            //alert = "WeeeWooo WeeeWooo " + bug.id;
-            NavigationManager.NavigateTo("/EditUser/" + editPerson.id);
-        }
 
-        private void DeleteUser()
-        {
-            var parameters = new DialogParameters();
-            parameters.Add("ContentText", "Do you really want to delete these records? This process cannot be undone.");
-            parameters.Add("ButtonText", "Delete");
-            parameters.Add("Color", Color.Error);
+            Console.WriteLine("DeletePerson is " + deletepersonid);
+     
+        
+            Snackbar.Add("Trying to delete..." + deletepersonid);
+            //   DeleteUser();
+             var result = await httpClient.GetAsync("BugManage/DeletePerson/"+deletepersonid);
 
-            var options = new DialogOptions()
-            {
-                CloseButton = true,
-                MaxWidth = MaxWidth.ExtraSmall
-
-            };
-            DialogService.Show<DialogDelete>("Delete", parameters, options);
-
-            
-        }
-
-
-        private async Task Delete(Person deletePerson)
-        {
-            Snackbar.Add("Trying to delete...");
-
-            DeleteUser();
-            //  var result = await httpClient.PostAsJsonAsync("BugManage/DeletePerson", deletePerson);
+             Snackbar.Add(result.ReasonPhrase);
 
             //   Console.WriteLine(result);
             await UpDatePeople();
 
-            //Snackbar.Add(result.ToString());
+            Snackbar.Add(result.ToString());
+            cansee = false;
 
-        } }
+        } 
+    
+    }

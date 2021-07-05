@@ -78,7 +78,8 @@ namespace BlazorBugOne.Server.Controllers
         {
             Console.WriteLine("Post has been called to delete a bug " + bug.id);
             IActionResult response = Ok(new { result = "TEST" });
-            await ContextUpdater.UpdateBug(bug);
+       //     await ContextUpdater.UpdateBug(bug);
+             ContextUpdater.RemoveBug(bug);
             return response;
 
         }
@@ -90,6 +91,22 @@ namespace BlazorBugOne.Server.Controllers
         public async Task<IActionResult> CreateBlogAgain(Bug bug)
         {
 
+
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("--------------------");
+            Console.WriteLine("Bug summary is " + bug.summary);
             Console.WriteLine("Bug incomming ...bug id is " + bug.id);        
             Console.WriteLine("Post has been called again");
             IActionResult response = Ok(new { result = "Success" });
@@ -255,44 +272,59 @@ namespace BlazorBugOne.Server.Controllers
 
 
 
+     //   public IActionResult DeletePerson(Person person)
 
-        [HttpPost("DeletePerson")]
-        public IActionResult DeletePerson(Person person)
+        [HttpGet("DeletePerson/{id}")]
+        public string DeletePerson(int id)
         {
-            IActionResult response;
-            Console.WriteLine("Post has been called to delete a person " + person.id);
-            int mycount = ContextUpdater.GetPersonCountbyId(person.id);
-                     
+            //      IActionResult response;
+            Console.WriteLine("Attempting to Remove person using contextupdater at id " + id);
 
-            if (mycount > 0)
-            {
-                 response = Ok(new { result = "DeletedPerson" });
-                 Console.WriteLine("Sorry, This user has {mycount} bugs assigned to them. \r\n Please assign to another user first.");
-            }else
-            {
-                 response = Ok(new { result = "{ 'fruit':'Apple','size':'Large','color': 'Red'}" });
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("");
+            
+
+            string result = ContextUpdater.RemovePerson(id);
 
 
-                Console.WriteLine("mycount is " + mycount);
-               // ContextUpdater.pGContext.Remove(person);
+           var response = Ok(new { result = "Can you see this?" });
 
-                ContextUpdater.RemovePerson(person);
+            return result;
+            //    Console.WriteLine("Post has been called to delete a person " + person.id);
+            //    int mycount = ContextUpdater.GetPersonCountbyId(person.id);
 
-             //   ContextUpdater.pGContext.SaveChanges();
-            }
+
+            //    if (mycount > 0)
+            //    {
+               //      response = Ok(new { result = "DeletedPerson" });
+            //         Console.WriteLine("Sorry, This user has {mycount} bugs assigned to them. \r\n Please assign to another user first.");
+            //    }else
+            //    {
+            //         response = Ok(new { result = "{ 'fruit':'Apple','size':'Large','color': 'Red'}" });
+            //        Console.WriteLine("");
+            //        Console.WriteLine("");
+            //        Console.WriteLine("");
+            //        Console.WriteLine("");
+            //        Console.WriteLine("");
+            //        Console.WriteLine("");
+
+
+            //        Console.WriteLine("mycount is " + mycount);
+            //        // ContextUpdater.pGContext.Remove(person);
+
+
+            //        Console.WriteLine("Attempting to remove " + person.firstname + " using the ContextUpdater");
+            //        ContextUpdater.RemovePerson(person);
+
+            //   ContextUpdater.pGContext.SaveChanges();
+            //return response;
+            //}
+
 
 
 
           //  return Content("<xml>This is poorly formatted xml.</xml>", "text/xml");
 
 
-            return response;
+          //  return response;
 
         }
 

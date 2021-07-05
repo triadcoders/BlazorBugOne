@@ -2,11 +2,13 @@
 @inject HttpClient Http
 @using System.Threading;
 @inject ISnackbar Snackbar
-
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
 
 
 @page "/SubmitBug"
 @page "/SubmitBug/{bugid}"
+
 @*<MudText Typo="Typo.h6">MudBlazor is @Text</MudText>
     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ButtonOnClick">@ButtonText</MudButton>
 
@@ -14,57 +16,62 @@
 
 <h1>Ultra Bug Tracker 2000 X Mega Extreme Ultimate Edition  v1.0</h1>
 
-@if (selecteduser !=null)
+@if (selecteduser != null)
 {
-  <h1>Selected User Id is @selecteduser</h1>
-}else{
-<h1>No user selected yet</h1>
+    <h1>Selected User Id is @selecteduser</h1>
 }
+else
+{
+    <h1>No user selected yet</h1>
+}
+
+
 
 <MudCard>
     <MudCardContent>
         <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-            <MudTextField T="string" @bind-Text="summaryText" Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />
+            @*<MudTextField Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" HelperText="Max. 50 characters" T="string" @bind-Text="summaryText" Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />*@
+            <MudTextField Validation="@(new Func<string, string>(CheckLength))"  HelperText="Max. 50 characters" T="string" @bind-Text=summaryText Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />
+
+
+
             <MudTextField T="string" @bind-Text="@detailsText" Label="Detail description" Required="false" RequiredError="Details recommended!" />
             @*<MudTextField T="string" Label="Who Discovered" RequiredError="Person is required" />*@
 
-        <MudSelect T="string" @bind-Text="@selecteduser" Label="Who Discovered" RequiredError="Person is required">
+            <MudSelect T="string" @bind-Text="@selecteduser" Label="Who Discovered" RequiredError="Person is required">
 
-            @*<MudTd DataLabel="usertype">@context.usertype </MudTd>*@
-
-
-            @if (peeps != null)
-            {
-            foreach ( var item in peeps )
-            {
-            <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
-            }
-            }
-
-          <MudSelectItem  OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
+                @*<MudTd DataLabel="usertype">@context.usertype </MudTd>*@
 
 
-        </MudSelect>
+                @if (peeps != null)
+                {
+                    foreach (var item in peeps)
+                    {
+                        <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
+                    }
+                }
+
+                <MudSelectItem OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
+
+
+            </MudSelect>
 
             @*<MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DeleteBug(context))">Delete</MudButton></MudTd>*@
 
 
-              <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
+            <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
 
 
-                  @if (peeps != null)
-                  {
-                  foreach ( var item in peeps )
-                  {
-                  <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
-                  }
-                  }
+                @if (peeps != null)
+                {
+                    foreach (var item in peeps)
+                    {
+                        <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
+                    }
+                }
 
-                  <MudSelectItem OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
-
-
-
-              </MudSelect>
+                <MudSelectItem OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
+            </MudSelect>
 
 
 
@@ -107,18 +114,18 @@
             </div>
 
             @*<MudItem xs="12" sm="6" md="4">
-            <MudDatePicker Label="Target Resolution Date" @bind-Date="resolutiondate" />
-        </MudItem>*@
+                    <MudDatePicker Label="Target Resolution Date" @bind-Date="resolutiondate" />
+                </MudItem>*@
 
 
 
             @*<MudItem xs="12" sm="12" md="12">
-            <MudTextField T="string" @bind-Text="@progressReport" Label="Progress Report" Variant="Variant.Text"  Lines="5" />
-        </MudItem>
+                    <MudTextField T="string" @bind-Text="@progressReport" Label="Progress Report" Variant="Variant.Text"  Lines="5" />
+                </MudItem>
 
-        <MudItem xs="12" sm="12" md="12">
-            <MudTextField T="string" @bind-Text="@resolutionText"  Label="Resolution Summary" Variant="Variant.Text"  Lines="5" />
-        </MudItem>*@
+                <MudItem xs="12" sm="12" md="12">
+                    <MudTextField T="string" @bind-Text="@resolutionText"  Label="Resolution Summary" Variant="Variant.Text"  Lines="5" />
+                </MudItem>*@
 
 
 
@@ -126,7 +133,7 @@
 
 
             @*<MudCheckBox T="bool" Required="true" RequiredError="You must agree" Class="ml-n2"
-        Label="I agree that MudBlazor is awesome!" />*@
+                Label="I agree that MudBlazor is awesome!" />*@
 
 
         </MudForm>
@@ -156,7 +163,9 @@
 @code { //https://www.donedone.com/blog/bug-tracking-template
     bool success;
 
+    Bug thebug = new();
 
+    int MAX_TEXT_COUNT = 50;
     string selecteduser;
     string assignedTo;
     Person unassignedUser;
@@ -183,30 +192,54 @@
     [Parameter]
     public string bugid { get; set; }
 
+    //FluentValidationValidator<string> ccValidator = new FluentValueValidator<string>(x => x.NotEmpty().Length(1, 100).CreditCard());
+    //FluentValidationValidator cc = new();
+
+
+
 
     //  HttpResponseMessage result;
     //    MudTextField<string> pwField1;
     MudForm form;
+
     //  Bug bug = new();
-
-
+    // The validation rules (overkill, I know, but very fluent):
+    // The validation rules (overkill, I know, but very fluent):
 
 
     public string Text { get; set; } = "????";
     public string ButtonText { get; set; } = "Click Me";
     public int ButtonClicked { get; set; }
 
+
+
+    private string CheckLength(string length)
+    {
+        if (length.Count() > 50 )
+            {
+            return "Please keep the summary to 50 characters or less, if you need to add more details use the details field";
+            }
+        return null;
+    }
+
+
     void ButtonOnClick()
     {
+
+
         ButtonClicked += 1;
         Text = $"Awesome x {ButtonClicked}";
         ButtonText = "Click Me Again";
+
     }
 
 
     Bug newbug;
     Person discoverdPerson;
     Person assignedtoperson;
+
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -258,7 +291,7 @@
 
             summaryText = newbug?.summary ?? "missing summary";
             detailsText = newbug?.description ?? "missing description";
-            projectText = newbug?.project?.name ?? "missing project" ;
+            projectText = newbug?.project?.name ?? "missing project";
             firstname = newbug?.personAssigned?.firstname ?? "missing personAssigned";
             priorityText = newbug?.priority;
             lifeCycleText = newbug?.lifecycle;
@@ -268,7 +301,7 @@
     }
 
 
-    private void  FireMessage()
+    private void FireMessage()
     {
         //Snackbar.Add("Fired!!");
     }
@@ -290,7 +323,7 @@
         if (newbug == null) newbug = new();
 
         if (selecteduser == "0") { selecteduser = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
-        //This is the user that discovered the bug
+                                                          //This is the user that discovered the bug
         if (selecteduser != null)
         {
             discoverdPerson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + selecteduser); //we want to update the person from the html selection
@@ -302,7 +335,7 @@
 
 
         if (assignedTo == "0") { assignedTo = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
-        //This is the user that is assigned to the bug.
+                                                      //This is the user that is assigned to the bug.
         if (assignedTo != null)
         {
 
@@ -351,9 +384,9 @@
         Console.WriteLine("Submitting bug with assignedto firstname is: " + newbug?.personDiscovered?.firstname ?? "No user discovered this bug");
         Console.WriteLine("Submitting bug with selecteduser firstname is: " + newbug?.personAssigned?.firstname ?? "No person was assigned to this bug");
 
+        Console.WriteLine("summary is newbug" + newbug.summary);
 
-
-
+        
         var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", newbug);
         //    resultstring = await result.Content.ReadAsStringAsync();
         resultstring = result.StatusCode.ToString();
@@ -366,4 +399,11 @@
 
         this.StateHasChanged();
 
-    } }
+    }
+
+
+
+
+
+
+}
