@@ -14,7 +14,7 @@
 
     <MudAlert Severity="Severity.Error">Meltdown is imminent</MudAlert>*@
 
-<h1>Ultra Bug Tracker 2000 X Mega Extreme Ultimate Edition  v1.0</h1>
+<h1>The Bug Tracker</h1>
 
 @if (selecteduser != null)
 {
@@ -31,7 +31,7 @@ else
     <MudCardContent>
         <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
             @*<MudTextField Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" HelperText="Max. 50 characters" T="string" @bind-Text="summaryText" Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />*@
-            <MudTextField Validation="@(new Func<string, string>(CheckLength))"  HelperText="Max. 50 characters" T="string" @bind-Text=summaryText Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />
+            <MudTextField Validation="@(new Func<string, string>(CheckLength))" HelperText="Max. 50 characters" T="string" @bind-Text=summaryText Label="Bug Summary" Required="true" RequiredError="Bug summary is required!" />
 
 
 
@@ -58,50 +58,53 @@ else
 
             @*<MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DeleteBug(context))">Delete</MudButton></MudTd>*@
 
-
-            <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
-
-
-                @if (peeps != null)
-                {
-                    foreach (var item in peeps)
-                    {
-                        <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
-                    }
-                }
-
-                <MudSelectItem OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
-            </MudSelect>
-
-
-
             <MudItem xs="12" sm="6" md="4">
-                <MudDatePicker Label="Date Discovered" @bind-Date="discoverydate" />
+
+                <MudSelect T="string" @bind-Text="@assignedTo" Label="Assigned To">
+
+
+                    @if (peeps != null)
+                    {
+                        foreach (var item in peeps)
+                        {
+                            <MudSelectItem Value=@item.id.ToString()>@item.firstname @item.lastname</MudSelectItem>
+                        }
+                    }
+
+                    <MudSelectItem  OnClick="@(() => FireMessage())" Value=@unassignedUser.id.ToString()> Unassigned </MudSelectItem>
+                </MudSelect>
+
             </MudItem>
 
-            <MudSelect T="string" @bind-Text="@projectText" Label="Project">
-                <MudSelectItem Value="@("Movie Inventory Program")" />
-                <MudSelectItem Value="@("In Stock Alert Program")" />
-                <MudSelectItem Value="@("The Blogging PRogram ")" />
-                <MudSelectItem Value="@("The Best Ever Video Game")" />
-            </MudSelect>
+
+            <MudItem xs="6" sm="6" md="4">
+                <MudDatePicker Label="Date Discovered" @bind-Date="discoverydate" />
+                <MudSelect T="string" @bind-Text="@projectText" Label="Project">
+                    <MudSelectItem Value="@("Movie Inventory Program")" />
+                    <MudSelectItem Value="@("In Stock Alert Program")" />
+                    <MudSelectItem Value="@("The Blogging PRogram ")" />
+                    <MudSelectItem Value="@("The Best Ever Video Game")" />
+                </MudSelect>
+            </MudItem>
 
 
-            <MudSelect T="string" @bind-Text="@lifeCycleText" Label="Life Cycle">
-                <MudSelectItem Value="@("Open")" />
-                <MudSelectItem Value="@("In Progress")" />
-                <MudSelectItem Value="@("Not a Bug")" />
-                <MudSelectItem Value="@("Not reproducible")" />
-                <MudSelectItem Value="@("Missing Information")" />
-                <MudSelectItem Value="@("Pushed Back")" />
-                <MudSelectItem Value="@("Ready for next release")" />
-                <MudSelectItem Value="@("Ready for next retest")" />
-                <MudSelectItem Value="@("Fix not confirmed")" />
-                <MudSelectItem Value="@("Closed")" />
-                <MudSelectItem Value="@("Fixed")" />
-                <MudSelectItem Value="@("On Hold")" />
-                <MudSelectItem Value="@("Duplicate bug")" />
-            </MudSelect>
+            <MudItem xs="6" sm="3" md="2">
+                <MudSelect T="string" @bind-Text="@lifeCycleText" Label="Life Cycle">
+                    <MudSelectItem Value="@("Open")" />
+                    <MudSelectItem Value="@("In Progress")" />
+                    <MudSelectItem Value="@("Not a Bug")" />
+                    <MudSelectItem Value="@("Not reproducible")" />
+                    <MudSelectItem Value="@("Missing Information")" />
+                    <MudSelectItem Value="@("Pushed Back")" />
+                    <MudSelectItem Value="@("Ready for next release")" />
+                    <MudSelectItem Value="@("Ready for next retest")" />
+                    <MudSelectItem Value="@("Fix not confirmed")" />
+                    <MudSelectItem Value="@("Closed")" />
+                    <MudSelectItem Value="@("Fixed")" />
+                    <MudSelectItem Value="@("On Hold")" />
+                    <MudSelectItem Value="@("Duplicate bug")" />
+                </MudSelect>
+            </MudItem>
 
 
             <div class="d-flex">
@@ -114,18 +117,18 @@ else
             </div>
 
             @*<MudItem xs="12" sm="6" md="4">
-                    <MudDatePicker Label="Target Resolution Date" @bind-Date="resolutiondate" />
-                </MudItem>*@
+            <MudDatePicker Label="Target Resolution Date" @bind-Date="resolutiondate" />
+        </MudItem>*@
 
 
 
             @*<MudItem xs="12" sm="12" md="12">
-                    <MudTextField T="string" @bind-Text="@progressReport" Label="Progress Report" Variant="Variant.Text"  Lines="5" />
-                </MudItem>
+            <MudTextField T="string" @bind-Text="@progressReport" Label="Progress Report" Variant="Variant.Text"  Lines="5" />
+        </MudItem>
 
-                <MudItem xs="12" sm="12" md="12">
-                    <MudTextField T="string" @bind-Text="@resolutionText"  Label="Resolution Summary" Variant="Variant.Text"  Lines="5" />
-                </MudItem>*@
+        <MudItem xs="12" sm="12" md="12">
+            <MudTextField T="string" @bind-Text="@resolutionText"  Label="Resolution Summary" Variant="Variant.Text"  Lines="5" />
+        </MudItem>*@
 
 
 
@@ -133,7 +136,7 @@ else
 
 
             @*<MudCheckBox T="bool" Required="true" RequiredError="You must agree" Class="ml-n2"
-                Label="I agree that MudBlazor is awesome!" />*@
+        Label="I agree that MudBlazor is awesome!" />*@
 
 
         </MudForm>
@@ -216,9 +219,9 @@ else
     private string CheckLength(string length)
     {
         if (length.Count() > 50 )
-            {
+        {
             return "Please keep the summary to 50 characters or less, if you need to add more details use the details field";
-            }
+        }
         return null;
     }
 
@@ -321,11 +324,28 @@ else
     private async Task BugSubmit()
     {
         if (newbug == null) newbug = new();
+        Console.WriteLine("The newbug id is " + newbug.id);
+        Snackbar.Add("The selected user is " + selecteduser);
+        Console.WriteLine("SubmitBug.razor: BugSumbit(): selecteduser= " + selecteduser);
 
-        if (selecteduser == "0") { selecteduser = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
-                                                          //This is the user that discovered the bug
-        if (selecteduser != null)
+
+
+        // if (selecteduser == "0") { selecteduser = null; Snackbar.Add("trying to set user to null."); } //If the user cannot be found or its the unnassigned user, lets make it null.
+
+
+        if (selecteduser == "0" || selecteduser == null) {
+            newbug.personDiscovered = null;
+            Snackbar.Add("trying to set user to null.");
+        } //If the user cannot be found or its the unnassigned user, lets make it null.
+
+
+
+
+        //This is the user that discovered the bug
+        if (selecteduser != "0" && selecteduser != null)
         {
+
+            Console.WriteLine("the selected user exist so we are attempting to pull user from api:" +selecteduser);
             discoverdPerson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + selecteduser); //we want to update the person from the html selection
                                                                                                           //    newbug.personDiscovered = discoverdPerson;
             newbug.personDiscovered = discoverdPerson;
@@ -334,12 +354,17 @@ else
 
 
 
-        if (assignedTo == "0") { assignedTo = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
-                                                      //This is the user that is assigned to the bug.
-        if (assignedTo != null)
+        //     if (assignedTo == "0") { assignedTo = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
+        if (assignedTo == "0" || assignedTo == null) { newbug.personAssigned = null; } //If the user cannot be found or its the unnassigned user, lets make it null.
+
+
+        //This is the user that is assigned to the bug.
+        if (assignedTo != "0" && assignedTo != null)
         {
 
             if (assignedtoperson == null) assignedtoperson = new();
+
+            Console.WriteLine("Attempting to get person from api with id of:" + assignedTo);
             assignedtoperson = await Http.GetFromJsonAsync<Person>("BugManage/GetPerson/" + assignedTo); //we want to update the assignedperson from the html selection                                                                                                      //     newbug.personAssigned = assignedtoperson;
 
 
@@ -353,13 +378,13 @@ else
 
         if (discoverydate.Value.Ticks > DateTime.Now.Ticks)
         {
-            Snackbar.Add("Not setting time to the future, unless you have a MrFusion.");
+            Snackbar.Add("Not setting time to the future, Future Boy.");
             discoverydate = DateTime.Now;
         }
         else
         {
-            Snackbar.Add("Ticks are" + discoverydate.Value.Ticks.ToString());
-            Snackbar.Add("Ticks are" + DateTime.Now.Ticks.ToString());
+            //    Snackbar.Add("Ticks are" + discoverydate.Value.Ticks.ToString());
+            //  Snackbar.Add("Ticks are" + DateTime.Now.Ticks.ToString());
         }
 
 
@@ -384,9 +409,19 @@ else
         Console.WriteLine("Submitting bug with assignedto firstname is: " + newbug?.personDiscovered?.firstname ?? "No user discovered this bug");
         Console.WriteLine("Submitting bug with selecteduser firstname is: " + newbug?.personAssigned?.firstname ?? "No person was assigned to this bug");
 
-        Console.WriteLine("summary is newbug" + newbug.summary);
+        Console.WriteLine("summary is newbug " + newbug.summary);
 
-        
+
+
+        Snackbar.Add("Atempting to submit the bug " + newbug.summary);
+
+        Console.WriteLine("The newbug id right before posting to api is " + newbug.id);
+
+        if (newbug.personAssigned == null) { Console.WriteLine("its null dude"); }
+
+        Console.WriteLine("The newbug selected discovred" + newbug.personAssigned ?? " NULL");
+        Console.WriteLine("The newbug selected discovred" + newbug.personDiscovered ?? " NULL");
+        Console.WriteLine("The newbug.id is " + newbug.id);
         var result = await Http.PostAsJsonAsync("BugManage/MakePostAgain", newbug);
         //    resultstring = await result.Content.ReadAsStringAsync();
         resultstring = result.StatusCode.ToString();

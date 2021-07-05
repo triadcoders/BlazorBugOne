@@ -37,16 +37,22 @@
         <MudTd DataLabel="summary">@context.summary</MudTd>
         <MudTd DataLabel="project">@context.project?.name</MudTd>
         @*<MudTd DataLabel="targetdate">@context.targetdate</MudTd>*@
-    <MudTd DataLabel="firstname">@context.personAssigned?.firstname @context.personAssigned?.lastname </MudTd>
+        <MudTd DataLabel="firstname">@context.personAssigned?.firstname @context.personAssigned?.lastname </MudTd>
         <MudTd DataLabel="priority">@context.priority</MudTd>
         <MudTd DataLabel="lifecycle">@context.lifecycle</MudTd>
         <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DoThing(context))">Edit</MudButton></MudTd>
-        <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DeleteBug(context))">Delete</MudButton></MudTd>
+        
+        
+        @*<MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => DeleteBug(context))">Delete</MudButton></MudTd>*@
+        <MudTd><MudButton Disabled="@enabled" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => Delete(context.id))">Delete New</MudButton></MudTd>
+
+
+        @*<MudTd><MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => OpenDialog2(context.id))">Delete</MudButton></MudTd>*@
 
         @*<MudTd>
-                <br />
-                <MudTextField Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@context.summary"  @onclick="@(() => DoThing(@context))" Label="Bug Summary" />
-            </MudTd>*@
+            <br />
+            <MudTextField Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@context.summary"  @onclick="@(() => DoThing(@context))" Label="Bug Summary" />
+        </MudTd>*@
 
     </RowTemplate>
     <PagerContent>
@@ -61,7 +67,16 @@
 
 @*<h1>@alert</h1>*@
 
-
+<MudDialog @bind-IsVisible="cansee">
+    <DialogContent>
+        <MudText>Confirm you want to delete bug with id: @bugtodeleteid</MudText>
+        <MudText>This cannot be undone.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@(() => DeleteBug(bugtodeleteid))">DELETE THE BUG</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code { 
 
@@ -69,6 +84,8 @@
     public int bugid { get; set; }
 
     Bug bug;
+    int bugtodeleteid;
+    bool cansee = false;
 
     // MudTable<Bug> _table;
     // private EventCallback<ICollection<Bug>> TableChanged { get; set; }
@@ -76,6 +93,10 @@
     string alert = "NA";
     private bool enabled = false;
     private IEnumerable<Bug> bugs = new List<Bug>();
+
+
+    void Cancel() => cansee = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,15 +128,43 @@
     }
 
 
-    private async Task DeleteBug(Bug bug)
+    private async Task DeleteBug(int bugid)
     {
+
+
+        // bug = await httpClient.GetFromJsonAsync<Bug>("BugManage/GetBug/"+bugid);
+
+
+
+
+        //  Snackbar.Add("Trying to actually delete the bugid !!!! " + bugid);
+        //   Snackbar.Add("Trying to actually delete the bug.id !!!! " + bug.id);
+
         // await TableChanged.InvokeAsync(bugs);
         //  alert = "WeeeWooo WeeeWooo " + bug.id;     
-        var result = await Http.PostAsJsonAsync("BugManage/DeleteBug", bug);
+        //var result = await Http.PostAsJsonAsync("BugManage/DeleteBug", bug);
+
+
+
+        foreach (var item in bugs)
+        {
+
+            if (bugid == item.id)
+            {
+                Snackbar.Add("I see the item has matched...trying to delete");
+                var result = await Http.PostAsJsonAsync("BugManage/DeleteBug", item);
+            }
+        }
+
+
+
+        cansee = false;
+
         //   var result = await Http.GetAsync("BugManage/DeleteBug", bug.id);
         //    var result = await Http.PostAsync("BugManage/DeleteBug", bug.id);
         // NavigationManager.NavigateTo("/MudTest/" + bug.id);
 
+        //This will refresh the list of bugs on the screen to reflect the deleted bug.
         bugs = await httpClient.GetFromJsonAsync<List<Bug>>("BugManage/GetBugs");
         foreach (var item in bugs)
         {
@@ -127,5 +176,43 @@
 
 
     }
+
+
+    private async Task Delete(int bugid)
+    {
+        cansee = true;
+        //   bug = buggy;
+
+        //if (bug == null)
+        //{
+        //    Snackbar.Add("I'm not sure why but the bug is null");
+
+        //    return;
+        //}
+        bugtodeleteid = bugid;
+
+
+
+        //Snackbar.Add("Attempting to delete bugid " + bug.id);
+
+
+        //Console.WriteLine("Deletebug is " + bugid);
+
+
+        //Snackbar.Add("Trying to delete..." + bugid);
+        ////   DeleteUser();
+        //var result = await httpClient.GetAsync("BugManage/DeleteBug/" + bugid);
+
+        //Snackbar.Add(result.ReasonPhrase);
+
+        ////   Console.WriteLine(result);
+        ////  await UpDatePeople();
+
+        //Snackbar.Add(result.ToString());
+        //cansee = false;
+
     }
+
+
+}
 

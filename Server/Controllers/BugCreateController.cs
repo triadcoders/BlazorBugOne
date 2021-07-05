@@ -90,39 +90,24 @@ namespace BlazorBugOne.Server.Controllers
         [HttpPost("MakePostAgain")]
         public async Task<IActionResult> CreateBlogAgain(Bug bug)
         {
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("*** Entering MakePostAgain on BugCreateController ****");
 
 
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
-            Console.WriteLine("--------------------");
+            Console.WriteLine("***START MakePostAgain in BugCreateController****");
             Console.WriteLine("Bug summary is " + bug.summary);
             Console.WriteLine("Bug incomming ...bug id is " + bug.id);        
             Console.WriteLine("Post has been called again");
             IActionResult response = Ok(new { result = "Success" });
 
-            Console.WriteLine(bug.description);
-            Console.WriteLine(bug.summary);
-            Console.WriteLine("project name is " + bug.project?.name);
             Console.WriteLine("Person Assigned is is " + bug.personAssigned?.firstname);
-            Console.WriteLine("Person Discovered is is " + bug.personDiscovered?.firstname);
+            Console.WriteLine("Bug Assinged id is " + bug.personAssigned?.id ?? "null");
+            Console.WriteLine("Bug discovered id is " + bug.personDiscovered?.id ?? "null");
 
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("Bug Priority is " + bug.priority  );
-            Console.WriteLine("Bug Assinged id is " + bug.personAssigned.id);
-            Console.WriteLine("Bug discovered id is " + bug.personDiscovered.id);
-
+            Console.WriteLine("*****END of MakePostAgain in BugCreateController***");
             await ContextUpdater.UpdateBug(bug);          
             return response;
 
