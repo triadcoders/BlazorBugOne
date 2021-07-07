@@ -1,17 +1,69 @@
 ﻿@inherits LayoutComponentBase
-
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://www.triadcoders.com" target="_blank" class="ml-md-auto">About</a>
+@using System.Threading;
+@*<div class="page">
+        <div class="sidebar">
+            <NavMenu2 />
         </div>
 
-        <div class="content px-4">
-            @Body
+        <div class="main">
+            <div class="top-row px-4">
+                <a href="https://www.triadcoders.com" target="_blank" class="ml-md-auto">About</a>
+            </div>
+
+            <div class="content px-4">
+                @Body
+            </div>
         </div>
-    </div>
-</div>
+    </div>*@
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Welcome to my Portfolio.</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => OpenDialog())"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu2></NavMenu2>
+    </MudDrawer>
+    <MudMainContent>
+        <h1>@something</h1>
+        <br/>
+        <br/>
+        <br/>
+        @Body
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    string something ="";
+
+    async Task OpenDialog()
+    {
+        something = "Mmmm Hamburgers";
+
+        await Task.Delay(3000);
+        something = "I love Hamburgers";
+        StateHasChanged();
+        await Task.Delay(3000);
+        something = "Ohhh wait I love Tacos too!";
+        StateHasChanged();
+        await Task.Delay(3000);
+        something = "I will update this menu later... hope you are having a great day!!";
+        StateHasChanged();
+        await Task.Delay(3000);
+        something = "";
+
+    }
+
+
+}

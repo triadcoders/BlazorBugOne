@@ -1,5 +1,4 @@
-﻿@page "/"
-
+﻿@page "/Theme"
 
 
 
@@ -10,50 +9,41 @@
         <MudCard>
             <MudCardMedia Image="images/bugsmall.png" Height="200" />
             <MudCardContent>
-                <MudText Typo="Typo.h5">The Bug Tracker Project</MudText>
-                <MudText Typo="Typo.body2">A Bug Tracker Built From The Ground Up In Blazor</MudText>
+                <MudText Typo="Typo.h5">Old Paint</MudText>
+                <MudText Typo="Typo.body2">Old paint found on a stone house door.</MudText>
+                <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
             </MudCardContent>
             <MudCardActions>
-                @*<MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>*@
+                <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
             </MudCardActions>
         </MudCard>
 
-      
-   
+        <MudSkeleton />
+        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="50px" Height="50px" />
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="200px" Height="110px" />
+    </MudPaper>
+</MudContainer>
+
+<MudButton OnClick="@((e) => DarkMode())">Toggle Dark/Light Mode</MudButton>
+
+
+<MudContainer Class="d-flex justify-center align-center">
+    <MudPaper Elevation="1" Class="pa-10" style="text-align:center">
+        <MudContainer Class="d-flex flex-column justify-center" style="width: 450px">
+            <MudText Typo="Typo.h5">Welcome</MudText>
+            <MudTextField Label="Email" @bind-Value="email" Variant="Variant.Outlined"></MudTextField>
+            <MudTextField Label="Password" @bind-Value="password" Variant="Variant.Outlined"></MudTextField>
+            <MudButton Class="align-self-start" Color="Color.Primary">Forgot password?</MudButton>
+            <MudButton Variant="Variant.Filled" Class="align-self-center mt-6" Color="Color.Primary">Sign In</MudButton>
+            <img src="microsoft_signin_light.svg">
+        </MudContainer>
     </MudPaper>
 </MudContainer>
 
 
+@code{
 
-
-
-@*<h1>The Bug Tracker Demo Project</h1>
-
-    <p>
-        A bug tracker written in C# using the following web technologies:
-    </p>
-
-    <ul>
-        <li>C# </li>
-        <li>Blazor </li>
-        <li>.NET 5.0 </li>
-        <li>Entity Framework</li>
-        <li>PostgreSQL</li>
-        <li>C# </li>
-        <li>Nginx </li>
-
-
-    </ul>*@
-
-
-
-
-
-
-
-@*<SurveyPrompt Title="Blazor is awesome!" />*@
-@code {
 
     string email = "FAKE";
     string password = "FAKE";
@@ -110,3 +100,5 @@
         }
     };
 }
+
+
