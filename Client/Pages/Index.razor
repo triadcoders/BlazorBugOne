@@ -8,14 +8,19 @@
 <MudContainer Class="d-flex justify-center align-center">
     <MudPaper Elevation="1" Class="pa-10" style="text-align:center">
         <MudCard>
-            <MudCardMedia Image="images/bugsmall.png" Height="200" />
+            @*<MudCardMedia Class="pa-10" Image="images/bugsmall.png" />*@
+            <MudAvatar Image="images/bugsmall.png" Style="height:125px; width:200px; background-color:transparent" Class="ma-2" />
+
             <MudCardContent>
                 <MudText Typo="Typo.h5">The Bug Tracker Project</MudText>
                 <MudText Typo="Typo.body2">A Bug Tracker Built From The Ground Up In Blazor</MudText>
+                <MudText Typo="Typo.body2">A working demo is available from the left sidebar menu.</MudText>
+                <br/>
+                <MudText Typo="Typo.body2">Blazor C# PostgreSQL .NET Nginx Entity Framework Ubuntu Server</MudText>
             </MudCardContent>
             <MudCardActions>
                 @*<MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>*@
+            <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>*@
             </MudCardActions>
         </MudCard>
 
