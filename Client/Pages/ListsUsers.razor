@@ -15,7 +15,10 @@
 
 
 
-
+@if (isloading)
+{
+    <h1>Loading the Users...</h1>
+}
 <MudTable Items="@people" Hover="true" SortLabel="Sort By" Dense=true CommitEditTooltip="Save">
 
     <HeaderContent>
@@ -79,7 +82,7 @@
     private int rating;
 
     bool cansee = false;
-
+    bool isloading = true;
 
     //   private void OpenDialog() => cansee = true;
 
@@ -119,8 +122,13 @@
 
     protected private async Task UpDatePeople()
     {
+
+
         //    httpClient = new();
         people = await httpClient.GetFromJsonAsync<List<Person>>("BugManage/GetPeople");
+
+        if (people != null) isloading = false;
+
 
         foreach (var item in people)
         {
@@ -166,24 +174,25 @@
     //}
 
 
-        private async Task Delete(int deletepersonid)
-        {
+    private async Task Delete(int deletepersonid)
+    {
 
-            Console.WriteLine("DeletePerson is " + deletepersonid);
-     
-        
-            Snackbar.Add("Trying to delete..." + deletepersonid);
-            //   DeleteUser();
-             var result = await httpClient.GetAsync("BugManage/DeletePerson/"+deletepersonid);
+        Console.WriteLine("DeletePerson is " + deletepersonid);
 
-             Snackbar.Add(result.ReasonPhrase);
 
-            //   Console.WriteLine(result);
-            await UpDatePeople();
+        //Snackbar.Add("Trying to delete..." + deletepersonid);
+        //   DeleteUser();
+        var result = await httpClient.GetAsync("BugManage/DeletePerson/"+deletepersonid);
 
-            Snackbar.Add(result.ToString());
-            cansee = false;
+        //   Snackbar.Add(result.ReasonPhrase);
 
-        } 
-    
+        //   Console.WriteLine(result);
+        await UpDatePeople();
+
+        Snackbar.Add("Delete Submitted");
+        //   Snackbar.Add(result.ToString());
+        cansee = false;
+
+    }
+
     }

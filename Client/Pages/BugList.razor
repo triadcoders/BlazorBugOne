@@ -14,6 +14,11 @@
 
 @page "/BugList"
 
+
+@if (loading)
+{
+<h1>Loading bugs...</h1>
+}
 <MudTable Items="@bugs" Hover="true" SortLabel="Sort By" Dense=true CommitEditTooltip="Save">
     <HeaderContent>
         <MudTh><MudTableSortLabel SortBy="new Func<Bug, object>(x=>x.id)">BugId#</MudTableSortLabel></MudTh>
@@ -97,10 +102,20 @@
 
     void Cancel() => cansee = false;
 
-
+    bool loading = true;
     protected override async Task OnInitializedAsync()
     {
+
+
+
         bugs = await httpClient.GetFromJsonAsync<List<Bug>>("BugManage/GetBugs");
+
+        if (bugs != null)
+        {
+            loading = false;
+        }
+
+
         //foreach (var item in bugs)
         //{
         //    if (item.person != null)

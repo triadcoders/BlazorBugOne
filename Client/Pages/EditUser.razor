@@ -22,26 +22,14 @@
     <h1>Add/Update User</h1>
 
 
-
-
-
-
-   
-   
-    
-
-
-
-
-
         <MudCard>
             <MudCardContent>
                 <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
 
 
                     <MudTextField T="string" @bind-Text="userid" ReadOnly Label="User Id" />
-                    <MudTextField T="string" @bind-Text="firstName" Label="First Name" Required="true" RequiredError="First name is required!" />
-                    <MudTextField T="string" @bind-Text="lastName" Label="Last Name" Required="true" RequiredError="Last name is required!" />
+                    <MudTextField T="string" Validation="@(new Func<string, string>(CheckLength))" @bind-Text="firstName" Label="First Name" Required="true" RequiredError="First name is required!"/>
+                    <MudTextField T="string" Validation="@(new Func<string, string>(CheckLength))" @bind-Text="lastName" Label="Last Name" Required="true" RequiredError="Last name is required!"/>
 
 
                     <div class="d-flex">
@@ -69,20 +57,20 @@
         @code { bool success;
 
             string userid;
-            string reportText = "NA";
-            string firstName;
-            string lastName;
-            string detailsText = "NA";
+            string reportText = "";
+            string firstName = "";
+            string lastName = "";
+            string detailsText = "";
             DateTime? discoverydate = DateTime.Today;
             DateTime? resolutiondate = DateTime.Today;
-            string progressReport = "NA";
-            string projectText = "NA";
-            string assignedTo = "NA";
+            string progressReport = "";
+            string projectText = "";
+            string assignedTo = "";
             string[] errors = { };
             string resultstring = "";
-            string resolutionText = "NA";
-            string userType = "NA";
-            string lifeCycleText = "NA";
+            string resolutionText = "";
+            string userType = "";
+            string lifeCycleText = "";
 
             [Parameter]
             public string personid { get; set; }
@@ -122,7 +110,16 @@
                 }
             }
 
-    
+
+            private string CheckLength(string length)
+            {
+                Snackbar.Add("Validating....");
+                if (length.Count() > 20)
+                {
+                    return "Character limit is 20";
+                }
+                return null;
+            }
 
 
             private async Task AddPerson()
@@ -157,5 +154,7 @@
                 }
 
                 var result = await Http.PostAsJsonAsync("BugManage/AddPerson", personNew);
+
+                Snackbar.Add(personNew.firstname + " " + personNew.lastname + " has been added.");
 
             } }
